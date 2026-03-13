@@ -1,0 +1,14 @@
+{
+  "name": "@chat/utils",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "nanoid": "^5.1.6"
+  }
+}

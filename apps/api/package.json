@@ -11,14 +11,18 @@
     "@chat/config": "workspace:*",
     "@chat/db": "workspace:*",
     "@chat/schema": "workspace:*",
+    "@chat/utils": "workspace:*",
     "@hono/node-server": "^1.19.11",
     "bcryptjs": "^3.0.3",
     "dotenv": "^17.3.1",
     "drizzle-orm": "^0.45.1",
     "hono": "^4.4.0",
+    "jsonwebtoken": "^9.0.3",
+    "nanoid": "^5.1.6",
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
     "tsx": "^4.19.0",
     "typescript": "^5.9.0"
   }

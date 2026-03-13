@@ -19,8 +19,28 @@ export const authRepository = {
   },
 
   async findUserByEmail(email: string) {
-    const [user] = await db.select().from(users).where(eq(users.email, email))
+    const [user] = await db
+      .select({
+        email: users.email,
+        displayName: users.displayName,
+        passwordHash: users.passwordHash,
+        id: users.id,
+      })
+      .from(users)
+      .where(eq(users.email, email))
 
+    return user ?? null
+  },
+  async findUserById(userId: string) {
+    const [user] = await db
+      .select({
+        id: users.id,
+        email: users.email,
+        displayName: users.displayName,
+        passwordHash: users.passwordHash,
+      })
+      .from(users)
+      .where(eq(users.id, userId))
     return user ?? null
   },
 
