@@ -83,12 +83,8 @@
           "name": "attachments_message_id_messages_id_fk",
           "tableFrom": "attachments",
           "tableTo": "messages",
-          "columnsFrom": [
-            "message_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["message_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -164,12 +160,8 @@
           "name": "call_participants_call_id_calls_id_fk",
           "tableFrom": "call_participants",
           "tableTo": "calls",
-          "columnsFrom": [
-            "call_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["call_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -177,12 +169,8 @@
           "name": "call_participants_user_id_users_id_fk",
           "tableFrom": "call_participants",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -279,12 +267,8 @@
           "name": "calls_room_id_rooms_id_fk",
           "tableFrom": "calls",
           "tableTo": "rooms",
-          "columnsFrom": [
-            "room_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["room_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -292,12 +276,8 @@
           "name": "calls_caller_id_users_id_fk",
           "tableFrom": "calls",
           "tableTo": "users",
-          "columnsFrom": [
-            "caller_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["caller_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -381,12 +361,8 @@
           "name": "device_tokens_user_id_users_id_fk",
           "tableFrom": "device_tokens",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -458,12 +434,8 @@
           "name": "message_deletions_message_id_messages_id_fk",
           "tableFrom": "message_deletions",
           "tableTo": "messages",
-          "columnsFrom": [
-            "message_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["message_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -471,12 +443,8 @@
           "name": "message_deletions_user_id_users_id_fk",
           "tableFrom": "message_deletions",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -484,10 +452,7 @@
       "compositePrimaryKeys": {
         "message_deletions_message_id_user_id_pk": {
           "name": "message_deletions_message_id_user_id_pk",
-          "columns": [
-            "message_id",
-            "user_id"
-          ]
+          "columns": ["message_id", "user_id"]
         }
       },
       "uniqueConstraints": {},
@@ -563,12 +528,8 @@
           "name": "message_receipts_message_id_messages_id_fk",
           "tableFrom": "message_receipts",
           "tableTo": "messages",
-          "columnsFrom": [
-            "message_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["message_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -576,12 +537,8 @@
           "name": "message_receipts_user_id_users_id_fk",
           "tableFrom": "message_receipts",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -589,10 +546,7 @@
       "compositePrimaryKeys": {
         "message_receipts_message_id_user_id_pk": {
           "name": "message_receipts_message_id_user_id_pk",
-          "columns": [
-            "message_id",
-            "user_id"
-          ]
+          "columns": ["message_id", "user_id"]
         }
       },
       "uniqueConstraints": {},
@@ -699,12 +653,8 @@
           "name": "messages_room_id_rooms_id_fk",
           "tableFrom": "messages",
           "tableTo": "rooms",
-          "columnsFrom": [
-            "room_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["room_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -712,12 +662,8 @@
           "name": "messages_sender_id_users_id_fk",
           "tableFrom": "messages",
           "tableTo": "users",
-          "columnsFrom": [
-            "sender_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["sender_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -725,12 +671,8 @@
           "name": "messages_reply_to_id_messages_id_fk",
           "tableFrom": "messages",
           "tableTo": "messages",
-          "columnsFrom": [
-            "reply_to_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["reply_to_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -805,12 +747,8 @@
           "name": "room_members_room_id_rooms_id_fk",
           "tableFrom": "room_members",
           "tableTo": "rooms",
-          "columnsFrom": [
-            "room_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["room_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -818,12 +756,8 @@
           "name": "room_members_user_id_users_id_fk",
           "tableFrom": "room_members",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -948,12 +882,8 @@
           "name": "sessions_user_id_users_id_fk",
           "tableFrom": "sessions",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1046,9 +976,7 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -1060,82 +988,47 @@
     "public.attachment_type": {
       "name": "attachment_type",
       "schema": "public",
-      "values": [
-        "image",
-        "video",
-        "file",
-        "audio"
-      ]
+      "values": ["image", "video", "file", "audio"]
     },
     "public.call_participant_status": {
       "name": "call_participant_status",
       "schema": "public",
-      "values": [
-        "joined",
-        "declined",
-        "missed"
-      ]
+      "values": ["joined", "declined", "missed"]
     },
     "public.call_status": {
       "name": "call_status",
       "schema": "public",
-      "values": [
-        "ongoing",
-        "ended",
-        "missed"
-      ]
+      "values": ["ongoing", "ended", "missed"]
     },
     "public.call_type": {
       "name": "call_type",
       "schema": "public",
-      "values": [
-        "voice",
-        "video"
-      ]
+      "values": ["voice", "video"]
     },
     "public.device_provider": {
       "name": "device_provider",
       "schema": "public",
-      "values": [
-        "expo",
-        "fcm",
-        "apns"
-      ]
+      "values": ["expo", "fcm", "apns"]
     },
     "public.message_receipt_status": {
       "name": "message_receipt_status",
       "schema": "public",
-      "values": [
-        "delivered",
-        "read"
-      ]
+      "values": ["delivered", "read"]
     },
     "public.message_type": {
       "name": "message_type",
       "schema": "public",
-      "values": [
-        "text",
-        "image",
-        "video",
-        "file",
-        "system"
-      ]
+      "values": ["text", "image", "video", "file", "system"]
     },
     "public.room_role": {
       "name": "room_role",
       "schema": "public",
-      "values": [
-        "member",
-        "admin"
-      ]
+      "values": ["member", "admin"]
     },
     "public.room_type": {
       "name": "room_type",
       "schema": "public",
-      "values": [
-        "direct",
-        "group"
-      ]
+      "values": ["direct", "group"]
     }
   },
   "schemas": {},

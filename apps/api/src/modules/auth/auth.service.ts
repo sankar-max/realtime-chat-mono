@@ -1,45 +1,38 @@
-import bcrypt from "bcryptjs";
-import { authRepository } from "./auth.repository";
+import bcrypt from 'bcryptjs'
+import { authRepository } from './auth.repository'
 
 export const authService = {
-	async register(data: {
-		email: string;
-		password: string;
-		displayName: string;
-	}) {
-		const existingUser = await authRepository.findUserByEmail(data.email);
+  async register(data: { email: string; password: string; displayName: string }) {
+    const existingUser = await authRepository.findUserByEmail(data.email)
 
-		if (existingUser) {
-			throw new Error("User already exists");
-		}
+    if (existingUser) {
+      throw new Error('User already exists')
+    }
 
-		const passwordHash = await bcrypt.hash(data.password, 10);
+    const passwordHash = await bcrypt.hash(data.password, 10)
 
-		const user = await authRepository.createUser({
-			email: data.email,
-			passwordHash,
-			displayName: data.displayName,
-		});
+    const user = await authRepository.createUser({
+      email: data.email,
+      passwordHash,
+      displayName: data.displayName,
+    })
 
-		return user;
-	},
+    return user
+  },
 
-	async login(data: { email: string; password: string }) {
-		const user = await authRepository.findUserByEmail(data.email);
+  async login(data: { email: string; password: string }) {
+    const user = await authRepository.findUserByEmail(data.email)
 
-		if (!user) {
-			throw new Error("Invalid credentials");
-		}
+    if (!user) {
+      throw new Error('Invalid credentials')
+    }
 
-		const isValidPassword = await bcrypt.compare(
-			data.password,
-			user.passwordHash,
-		);
+    const isValidPassword = await bcrypt.compare(data.password, user.passwordHash)
 
-		if (!isValidPassword) {
-			throw new Error("Invalid credentials");
-		}
+    if (!isValidPassword) {
+      throw new Error('Invalid credentials')
+    }
 
-		return user;
-	},
-};
+    return user
+  },
+}
