@@ -1,0 +1,24 @@
+{
+	"name": "@chat/api",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "tsx watch src/index.ts",
+		"build": "tsc"
+	},
+	"dependencies": {
+		"@chat/config": "workspace:*",
+		"@chat/db": "workspace:*",
+		"@chat/schema": "workspace:*",
+		"@hono/node-server": "^1.19.11",
+		"bcryptjs": "^3.0.3",
+		"dotenv": "^17.3.1",
+		"drizzle-orm": "^0.45.1",
+		"hono": "^4.4.0",
+		"zod": "^4.3.6"
+	},
+	"devDependencies": {
+		"tsx": "^4.19.0",
+		"typescript": "^5.9.0"
+	}
+}
