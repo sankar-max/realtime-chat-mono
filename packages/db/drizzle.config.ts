@@ -1,4 +1,3 @@
-import { env } from '@chat/config'
 import { defineConfig } from 'drizzle-kit'
 
 export default defineConfig({
@@ -6,6 +5,6 @@ export default defineConfig({
   out: 'packages/db/migrations',
   dialect: 'postgresql',
   dbCredentials: {
-    url: env.DATABASE_URL,
+    url: process.env.DATABASE_URL!,
   },
 })

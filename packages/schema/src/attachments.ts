@@ -1,4 +1,4 @@
-import { index, integer, pgEnum, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { index, integer, pgEnum, pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core'
 
 import { messages } from './messages'
 
@@ -7,9 +7,9 @@ export const attachmentTypeEnum = pgEnum('attachment_type', ['image', 'video', '
 export const attachments = pgTable(
   'attachments',
   {
-    id: uuid('id').primaryKey().defaultRandom(),
+    id: varchar('id', { length: 255 }).primaryKey(),
 
-    messageId: uuid('message_id')
+    messageId: varchar('message_id', { length: 255 })
       .notNull()
       .references(() => messages.id, { onDelete: 'cascade' }),
 
