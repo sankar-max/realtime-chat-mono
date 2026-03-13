@@ -1,15 +1,23 @@
-import { pgEnum, pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core'
+import { pgEnum, pgTable, timestamp, uniqueIndex, varchar } from 'drizzle-orm/pg-core'
 
 export const roomTypeEnum = pgEnum('room_type', ['direct', 'group'])
 
-export const rooms = pgTable('rooms', {
-  id: uuid('id').primaryKey().defaultRandom(),
+export const rooms = pgTable(
+  'rooms',
+  {
+    id: varchar('id', { length: 255 }).primaryKey(),
 
-  name: varchar('name', { length: 255 }),
+    name: varchar('name', { length: 255 }),
 
-  type: roomTypeEnum('type').notNull(),
+    dmKey: varchar('dm_key', { length: 255 }),
 
-  createdAt: timestamp('created_at').defaultNow().notNull(),
+    type: roomTypeEnum('type').notNull(),
 
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-})
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+
+    updatedAt: timestamp('updated_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    dmKeyIndex: uniqueIndex('rooms_dm_key_unique').on(table.dmKey),
+  }),
+)

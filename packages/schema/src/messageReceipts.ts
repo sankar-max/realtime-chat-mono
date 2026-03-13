@@ -1,5 +1,4 @@
-import { index, pgEnum, pgTable, primaryKey, timestamp, uuid } from 'drizzle-orm/pg-core'
-
+import { index, pgEnum, pgTable, primaryKey, timestamp, varchar } from 'drizzle-orm/pg-core'
 import { messages } from './messages'
 import { users } from './users'
 
@@ -8,11 +7,11 @@ export const messageReceiptStatusEnum = pgEnum('message_receipt_status', ['deliv
 export const messageReceipts = pgTable(
   'message_receipts',
   {
-    messageId: uuid('message_id')
+    messageId: varchar('message_id', { length: 255 })
       .notNull()
       .references(() => messages.id, { onDelete: 'cascade' }),
 
-    userId: uuid('user_id')
+    userId: varchar('user_id', { length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
 

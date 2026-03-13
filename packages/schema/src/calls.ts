@@ -1,5 +1,4 @@
-import { index, pgEnum, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
-
+import { index, pgEnum, pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core'
 import { rooms } from './rooms'
 import { users } from './users'
 
@@ -10,13 +9,13 @@ export const callStatusEnum = pgEnum('call_status', ['ongoing', 'ended', 'missed
 export const calls = pgTable(
   'calls',
   {
-    id: uuid('id').primaryKey().defaultRandom(),
+    id: varchar('id', { length: 255 }).primaryKey(),
 
-    roomId: uuid('room_id')
+    roomId: varchar('room_id', { length: 255 })
       .notNull()
       .references(() => rooms.id, { onDelete: 'cascade' }),
 
-    callerId: uuid('caller_id')
+    callerId: varchar('caller_id', { length: 255 })
       .notNull()
       .references(() => users.id),
 
@@ -34,20 +33,23 @@ export const calls = pgTable(
   },
   (table) => ({
     roomIndex: index('calls_room_idx').on(table.roomId),
+
+    callerIndex: index('calls_caller_idx').on(table.callerId),
   }),
 )
+
 export const callParticipantStatusEnum = pgEnum('call_participant_status', ['joined', 'declined', 'missed'])
 
 export const callParticipants = pgTable(
   'call_participants',
   {
-    id: uuid('id').primaryKey().defaultRandom(),
+    id: varchar('id', { length: 255 }).primaryKey(),
 
-    callId: uuid('call_id')
+    callId: varchar('call_id', { length: 255 })
       .notNull()
       .references(() => calls.id, { onDelete: 'cascade' }),
 
-    userId: uuid('user_id')
+    userId: varchar('user_id', { length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
 
@@ -59,5 +61,7 @@ export const callParticipants = pgTable(
   },
   (table) => ({
     callIndex: index('call_participants_call_idx').on(table.callId),
+
+    userIndex: index('call_participants_user_idx').on(table.userId),
   }),
 )

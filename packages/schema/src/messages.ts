@@ -1,4 +1,5 @@
-import { boolean, index, pgEnum, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core'
+import { boolean, index, pgEnum, pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core'
+
 import { rooms } from './rooms'
 import { users } from './users'
 
@@ -7,13 +8,13 @@ export const messageTypeEnum = pgEnum('message_type', ['text', 'image', 'video',
 export const messages = pgTable(
   'messages',
   {
-    id: uuid('id').primaryKey().defaultRandom(),
+    id: varchar('id', { length: 255 }).primaryKey(),
 
-    roomId: uuid('room_id')
+    roomId: varchar('room_id', { length: 255 })
       .notNull()
       .references(() => rooms.id, { onDelete: 'cascade' }),
 
-    senderId: uuid('sender_id')
+    senderId: varchar('sender_id', { length: 255 })
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
 
@@ -21,10 +22,7 @@ export const messages = pgTable(
 
     content: text('content'),
 
-    // biome-ignore lint/suspicious/noExplicitAny: self-referential relation needs any to avoid circular type inference
-    replyToId: uuid('reply_to_id').references((): any => messages.id, {
-      onDelete: 'set null',
-    }),
+    replyToId: varchar('reply_to_id', { length: 255 }).references((): any => messages.id, { onDelete: 'set null' }),
 
     isDeletedForEveryone: boolean('is_deleted_for_everyone').default(false).notNull(),
 
@@ -36,5 +34,9 @@ export const messages = pgTable(
   },
   (table) => ({
     roomMessagesIndex: index('messages_room_created_idx').on(table.roomId, table.createdAt),
+
+    senderIndex: index('messages_sender_idx').on(table.senderId),
+
+    replyToIndex: index('messages_reply_to_idx').on(table.replyToId),
   }),
 )
