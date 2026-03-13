@@ -1,0 +1,30 @@
+{
+  "editor.defaultFormatter": "astral-sh.biome",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports.biome": "explicit",
+    "source.fixAll.biome": "explicit"
+  },
+  "biome.enabled": true,
+  "[javascript]": {
+    "editor.defaultFormatter": "astral-sh.biome"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "astral-sh.biome"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "astral-sh.biome"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "astral-sh.biome"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "astral-sh.biome"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "astral-sh.biome"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "astral-sh.biome"
+  }
+}
