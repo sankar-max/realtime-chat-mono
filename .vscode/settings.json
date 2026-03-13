@@ -13,7 +13,7 @@
     "editor.defaultFormatter": "astral-sh.biome"
   },
   "[typescript]": {
-    "editor.defaultFormatter": "astral-sh.biome"
+    "editor.defaultFormatter": "biomejs.biome"
   },
   "[typescriptreact]": {
     "editor.defaultFormatter": "astral-sh.biome"

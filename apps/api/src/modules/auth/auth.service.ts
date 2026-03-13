@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs'
+import { generateAccessToken } from '../../lib/jwt'
 import { authRepository } from './auth.repository'
 
 export const authService = {
@@ -22,17 +23,17 @@ export const authService = {
 
   async login(data: { email: string; password: string }) {
     const user = await authRepository.findUserByEmail(data.email)
-
+    console.log('👨🏻', user)
     if (!user) {
+      console.log('error')
       throw new Error('Invalid credentials')
     }
-
     const isValidPassword = await bcrypt.compare(data.password, user.passwordHash)
 
     if (!isValidPassword) {
       throw new Error('Invalid credentials')
     }
-
-    return user
+    const token = generateAccessToken(user.id)
+    return { user, token }
   },
 }
