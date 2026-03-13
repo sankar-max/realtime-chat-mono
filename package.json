@@ -1,0 +1,20 @@
+{
+	"name": "level-moreno",
+	"private": true,
+	"scripts": {
+		"dev": "turbo run dev",
+		"build": "turbo run build",
+		"lint": "turbo run lint",
+		"typecheck": "turbo run typecheck",
+		"db:generate": "drizzle-kit generate --config packages/db/drizzle.config.ts",
+		"db:push": "drizzle-kit push --config packages/db/drizzle.config.ts",
+		"db:studio": "drizzle-kit studio --config packages/db/drizzle.config.ts"
+	},
+	"devDependencies": {
+		"@types/node": "^25.4.0",
+		"drizzle-kit": "^0.31.9",
+		"turbo": "^2.8.12",
+		"typescript": "^5.9.2"
+	},
+	"packageManager": "pnpm@10.29.3"
+}
