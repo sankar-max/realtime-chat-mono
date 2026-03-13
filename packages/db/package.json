@@ -1,0 +1,19 @@
+{
+	"name": "@chat/db",
+	"private": true,
+	"version": "0.1.0",
+	"type": "module",
+	"exports": {
+		".": "./src/index.ts"
+	},
+	"dependencies": {
+		"@chat/config": "workspace:*",
+		"@chat/schema": "workspace:*",
+		"@neondatabase/serverless": "^1.0.2",
+		"dotenv": "^17.3.1",
+		"drizzle-orm": "^0.45.1"
+	},
+	"devDependencies": {
+		"drizzle-kit": "^0.31.9"
+	}
+}
