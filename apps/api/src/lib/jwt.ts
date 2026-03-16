@@ -3,16 +3,23 @@ import jwt from 'jsonwebtoken'
 
 type AccessTokenPayload = {
   sub: string
+  sid: string
 }
 
-export function generateAccessToken(userId: string): string {
-  if (!userId) {
-    throw new Error('userId is required')
+export function generateAccessToken(userId: string, sessionId: string): string {
+  if (!userId || !sessionId) {
+    throw new Error('userId and sessionId are required')
   }
 
-  return jwt.sign({ sub: userId }, env.JWT_SECRET, { expiresIn: '15m' })
+  return jwt.sign(
+    {
+      sub: userId,
+      sid: sessionId,
+    },
+    env.JWT_SECRET,
+    { expiresIn: '15m' },
+  )
 }
-
 export function verifyAccessToken(token: string): AccessTokenPayload {
   if (!token) {
     throw new Error('Token required')

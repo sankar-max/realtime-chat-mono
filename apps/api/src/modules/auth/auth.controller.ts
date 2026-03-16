@@ -52,4 +52,25 @@ export const authController = {
       )
     }
   },
+  async getMe(c: Context) {
+    const userId = c.get('userId')
+    try {
+      const user = await authService.getMe(userId)
+
+      if (!user) return c.json({ success: false, error: 'User not found' }, 404)
+
+      return c.json({
+        success: true,
+        data: user,
+      })
+    } catch (error) {
+      return c.json(
+        {
+          success: false,
+          error: error instanceof Error ? error.message : 'Unknown error',
+        },
+        400,
+      )
+    }
+  },
 }
