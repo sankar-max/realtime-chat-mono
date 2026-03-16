@@ -1,6 +1,7 @@
-import { randomUUID } from 'node:crypto'
 import { db } from '@chat/db'
 import { sessions, users } from '@chat/schema'
+import { createId } from '@chat/utils'
+import { addDays } from 'date-fns'
 import { eq } from 'drizzle-orm'
 
 export const authRepository = {
@@ -8,7 +9,7 @@ export const authRepository = {
     const [user] = await db
       .insert(users)
       .values({
-        id: randomUUID(),
+        id: createId(),
         email: data.email,
         passwordHash: data.passwordHash,
         displayName: data.displayName,
@@ -44,24 +45,14 @@ export const authRepository = {
     return user ?? null
   },
 
-  async createSession(data: {
-    userId: string
-    refreshToken: string
-    deviceName?: string
-    deviceIp?: string
-    userAgent?: string
-    expiresAt: Date
-  }) {
+  async createSession(data: { userId: string; refreshToken: string }) {
     const [session] = await db
       .insert(sessions)
       .values({
-        id: randomUUID(),
+        id: createId(),
         userId: data.userId,
         refreshToken: data.refreshToken,
-        deviceName: data.deviceName ?? null,
-        deviceIp: data.deviceIp ?? null,
-        userAgent: data.userAgent ?? null,
-        expiresAt: data.expiresAt,
+        expiresAt: addDays(new Date(), 30),
       })
       .returning()
 
