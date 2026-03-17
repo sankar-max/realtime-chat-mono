@@ -1,21 +1,25 @@
 import 'dotenv/config'
 import { env } from '@chat/config'
-import { createId } from '@chat/utils'
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
+import { cors } from 'hono/cors'
+import { logger } from 'hono/logger'
+import { errorHandler } from './middleware/error.middleware'
 import { authRouter } from './modules/auth/auth.routes'
 import type { AppVariables } from './types/context'
 
-const id = createId()
 const app = new Hono<{
   Variables: AppVariables
 }>()
 
-app.get('/', (c) => {
-  return c.text('Moreno API running')
-})
+app.use('*', logger())
+app.use('*', cors())
+
+app.get('/', (c) => c.text('Hono based API is running'))
 
 app.route('/auth', authRouter)
+
+app.onError(errorHandler)
 
 serve({
   fetch: app.fetch,

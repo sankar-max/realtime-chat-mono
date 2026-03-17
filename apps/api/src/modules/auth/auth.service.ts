@@ -1,5 +1,6 @@
 import { createId } from '@chat/utils'
 import bcrypt from 'bcryptjs'
+import { AuthError, ConflictError } from '../../lib/errors'
 import { generateAccessToken } from '../../lib/jwt'
 import { authRepository } from './auth.repository'
 
@@ -8,7 +9,7 @@ export const authService = {
     const existingUser = await authRepository.findUserByEmail(data.email)
 
     if (existingUser) {
-      throw new Error('User already exists')
+      throw new ConflictError('User already exists')
     }
 
     const passwordHash = await bcrypt.hash(data.password, 10)
@@ -28,13 +29,13 @@ export const authService = {
     const user = await authRepository.findUserByEmail(data.email)
 
     if (!user) {
-      throw new Error('Invalid credentials')
+      throw new AuthError('Invalid credentials')
     }
 
     const isValidPassword = await bcrypt.compare(data.password, user.passwordHash)
 
     if (!isValidPassword) {
-      throw new Error('Invalid credentials')
+      throw new AuthError('Invalid credentials')
     }
 
     const { passwordHash, ...safeUser } = user
@@ -53,6 +54,32 @@ export const authService = {
       accessToken,
       refreshToken,
     }
+  },
+  async refresh(refreshToken: string) {
+    if (!refreshToken) {
+      throw new AuthError('Refresh token required')
+    }
+
+    const session = await authRepository.findSessionByToken(refreshToken)
+
+    if (!session) {
+      throw new AuthError('Invalid session')
+    }
+
+    if (session.revokedAt) {
+      throw new AuthError('Session revoked')
+    }
+
+    if (session.expiresAt < new Date()) {
+      throw new AuthError('Session expired')
+    }
+
+    const accessToken = generateAccessToken(session.userId, session.id)
+
+    return { accessToken }
+  },
+  async logout(sessionId: string) {
+    await authRepository.revokeSession(sessionId)
   },
   async getMe(userId: string) {
     const user = await authRepository.findUserById(userId)

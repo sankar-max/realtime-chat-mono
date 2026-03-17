@@ -7,8 +7,9 @@ import { z } from 'zod'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// Ensure .env is loaded from the root regardless of CWD
+// Load base .env first, then .env.local as an override
 config({ path: path.resolve(__dirname, '../../../.env') })
+config({ path: path.resolve(__dirname, '../../../.env.local'), override: true })
 
 export const env = createEnv({
   server: {
