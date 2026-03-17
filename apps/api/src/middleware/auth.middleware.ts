@@ -1,6 +1,7 @@
 import type { Context, Next } from 'hono'
 import { AuthError } from '../lib/errors'
 import { verifyAccessToken } from '../lib/jwt'
+import { authRepository } from '../modules/auth/auth.repository'
 
 export async function authMiddleware(c: Context, next: Next) {
   const authHeader = c.req.header('Authorization')
@@ -15,14 +16,20 @@ export async function authMiddleware(c: Context, next: Next) {
     throw new AuthError('Invalid authorization header')
   }
 
-  try {
-    const payload = verifyAccessToken(token)
+  const payload = verifyAccessToken(token)
+  c.set('userId', payload.sub)
+  c.set('sessionId', payload.sid)
 
-    c.set('userId', payload.sub)
-    c.set('sessionId', payload.sid)
-
-    await next()
-  } catch {
-    throw new AuthError('Invalid or expired token')
+  const session = await authRepository.findSessionByToken(payload.sid)
+  if (!session) {
+    throw new AuthError('Invalid session')
   }
+  if (session.revokedAt) {
+    throw new AuthError('Session revoked')
+  }
+
+  if (session.expiresAt < new Date()) {
+    throw new AuthError('Session expired')
+  }
+  await next()
 }

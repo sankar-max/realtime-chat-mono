@@ -2,7 +2,6 @@ import path from 'node:path'
 import { config } from 'dotenv'
 import { defineConfig } from 'drizzle-kit'
 
-// Standard Senior Monorepo Pattern: Resolve from the Current Working Directory (Root)
 const root = process.cwd()
 
 config({ path: path.resolve(root, '.env') })

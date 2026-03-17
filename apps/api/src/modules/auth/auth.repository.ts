@@ -52,6 +52,7 @@ export const authRepository = {
   async revokeSession(sessionId: string) {
     await db.update(sessions).set({ revokedAt: new Date() }).where(eq(sessions.id, sessionId))
   },
+
   async createSession(data: { userId: string; refreshToken: string }) {
     const [session] = await db
       .insert(sessions)
