@@ -1,76 +1,62 @@
 import type { Context } from 'hono'
-
-import { loginSchema, registerSchema } from './auth.schema'
+import { NotFoundError } from '../../lib/errors'
 import { authService } from './auth.service'
 
 export const authController = {
   async register(c: Context) {
-    try {
-      const body = await c.req.json()
+    const data = c.req.valid('json' as never)
+    const user = await authService.register(data)
 
-      const data = registerSchema.parse(body)
-
-      const user = await authService.register(data)
-
-      return c.json(
-        {
-          success: true,
-          data: user,
-        },
-        201,
-      )
-    } catch (error) {
-      return c.json(
-        {
-          success: false,
-          error: error instanceof Error ? error.message : 'Unknown error',
-        },
-        400,
-      )
-    }
+    return c.json(
+      {
+        success: true,
+        data: user,
+      },
+      201,
+    )
   },
 
   async login(c: Context) {
-    try {
-      const body = await c.req.json()
+    const data = c.req.valid('json' as never)
+    const result = await authService.login(data)
 
-      const data = loginSchema.parse(body)
-
-      const user = await authService.login(data)
-
-      return c.json({
-        success: true,
-        data: user,
-      })
-    } catch (error) {
-      return c.json(
-        {
-          success: false,
-          error: error instanceof Error ? error.message : 'Unknown error',
-        },
-        400,
-      )
-    }
+    return c.json({
+      success: true,
+      data: result,
+    })
   },
+
+  async refresh(c: Context) {
+    const { refreshToken } = c.req.valid('json' as never)
+    const result = await authService.refresh(refreshToken)
+
+    return c.json({
+      success: true,
+      data: result,
+    })
+  },
+
+  async logout(c: Context) {
+    const sessionId = c.get('sessionId')
+    await authService.logout(sessionId)
+
+    return c.json({
+      success: true,
+      message: 'Logged out successfully',
+    })
+  },
+
   async getMe(c: Context) {
     const userId = c.get('userId')
-    try {
-      const user = await authService.getMe(userId)
+    const user = await authService.getMe(userId)
 
-      if (!user) return c.json({ success: false, error: 'User not found' }, 404)
-
-      return c.json({
-        success: true,
-        data: user,
-      })
-    } catch (error) {
-      return c.json(
-        {
-          success: false,
-          error: error instanceof Error ? error.message : 'Unknown error',
-        },
-        400,
-      )
+    if (!user) {
+      throw new NotFoundError('User not found')
     }
+
+    return c.json({
+      success: true,
+      data: user,
+    })
   },
 }

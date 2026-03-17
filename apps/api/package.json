@@ -13,6 +13,7 @@
     "@chat/schema": "workspace:*",
     "@chat/utils": "workspace:*",
     "@hono/node-server": "^1.19.11",
+    "@hono/zod-validator": "^0.7.6",
     "bcryptjs": "^3.0.3",
     "date-fns": "^4.1.0",
     "dotenv": "^17.3.1",
