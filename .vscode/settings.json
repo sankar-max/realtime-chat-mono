@@ -19,7 +19,7 @@
     "editor.defaultFormatter": "astral-sh.biome"
   },
   "[json]": {
-    "editor.defaultFormatter": "astral-sh.biome"
+    "editor.defaultFormatter": "fronterior.biome-monorepo"
   },
   "[jsonc]": {
     "editor.defaultFormatter": "astral-sh.biome"
