@@ -13,7 +13,10 @@
     "db:generate": "drizzle-kit generate --config packages/db/drizzle.config.ts",
     "db:push": "drizzle-kit push --config packages/db/drizzle.config.ts",
     "db:studio": "drizzle-kit studio --config packages/db/drizzle.config.ts",
-    "prepare": "husky"
+    "prepare": "husky",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.6",
@@ -29,5 +32,5 @@
       "biome check --write --no-errors-on-unmatched"
     ]
   },
-  "packageManager": "pnpm@10.29.3"
+  "packageManager": "pnpm@10.32.1"
 }

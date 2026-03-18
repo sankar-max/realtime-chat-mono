@@ -6,6 +6,7 @@ import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
 import { errorHandler } from './middleware/error.middleware'
 import { authRouter } from './modules/auth/auth.routes'
+import { roomsRouter } from './modules/rooms/rooms.routes'
 import type { AppVariables } from './types/context'
 
 const app = new Hono<{
@@ -18,6 +19,7 @@ app.use('*', cors())
 app.get('/', (c) => c.text('Hono based API is running'))
 
 app.route('/auth', authRouter)
+app.route('/rooms', roomsRouter)
 
 app.onError(errorHandler)
 
