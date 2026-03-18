@@ -109,6 +109,9 @@ importers:
       '@chat/schema':
         specifier: workspace:*
         version: link:../schema
+      '@chat/utils':
+        specifier: workspace:*
+        version: link:../utils
       '@neondatabase/serverless':
         specifier: ^1.0.2
         version: 1.0.2
@@ -122,9 +125,15 @@ importers:
         specifier: ^3.4.8
         version: 3.4.8
     devDependencies:
+      '@faker-js/faker':
+        specifier: ^10.3.0
+        version: 10.3.0
       drizzle-kit:
         specifier: ^0.31.9
         version: 0.31.9
+      tsx:
+        specifier: ^4.21.0
+        version: 4.21.0
 
   packages/schema:
     dependencies:
@@ -659,6 +668,10 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@faker-js/faker@10.3.0':
+    resolution: {integrity: sha512-It0Sne6P3szg7JIi6CgKbvTZoMjxBZhcv91ZrqrNuaZQfB5WoqYYbzCUOq89YR+VY8juY9M1vDWmDDa2TzfXCw==}
+    engines: {node: ^20.19.0 || ^22.13.0 || ^23.5.0 || >=24.0.0, npm: '>=10'}
 
   '@hono/node-server@1.19.11':
     resolution: {integrity: sha512-dr8/3zEaB+p0D2n/IUrlPF1HZm586qgJNXK1a9fhg/PzdtkK7Ksd5l312tJX2yBuALqDYBlG20QEbayqPyxn+g==}
@@ -1423,6 +1436,8 @@ snapshots:
 
   '@esbuild/win32-x64@0.27.3':
     optional: true
+
+  '@faker-js/faker@10.3.0': {}
 
   '@hono/node-server@1.19.11(hono@4.12.7)':
     dependencies:

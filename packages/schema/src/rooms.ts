@@ -1,4 +1,5 @@
 import { pgEnum, pgTable, timestamp, uniqueIndex, varchar } from 'drizzle-orm/pg-core'
+import { users } from './users'
 
 export const roomTypeEnum = pgEnum('room_type', ['direct', 'group'])
 
@@ -14,6 +15,9 @@ export const rooms = pgTable(
     type: roomTypeEnum('type').notNull(),
 
     createdAt: timestamp('created_at').defaultNow().notNull(),
+    createdBy: varchar('created_by', { length: 255 })
+      .notNull()
+      .references(() => users.id),
 
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
   },

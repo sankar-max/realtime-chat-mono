@@ -49,6 +49,11 @@ export const authRepository = {
       where: eq(sessions.refreshToken, refreshToken),
     })
   },
+  async findSessionById(sessionId: string) {
+    return db.query.sessions.findFirst({
+      where: eq(sessions.id, sessionId),
+    })
+  },
   async revokeSession(sessionId: string) {
     await db.update(sessions).set({ revokedAt: new Date() }).where(eq(sessions.id, sessionId))
   },

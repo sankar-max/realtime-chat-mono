@@ -7,17 +7,21 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:seed": "tsx src/seed.ts"
   },
   "dependencies": {
     "@chat/config": "workspace:*",
     "@chat/schema": "workspace:*",
+    "@chat/utils": "workspace:*",
     "@neondatabase/serverless": "^1.0.2",
     "dotenv": "^17.3.1",
     "drizzle-orm": "^0.45.1",
     "postgres": "^3.4.8"
   },
   "devDependencies": {
-    "drizzle-kit": "^0.31.9"
+    "@faker-js/faker": "^10.3.0",
+    "drizzle-kit": "^0.31.9",
+    "tsx": "^4.21.0"
   }
 }
