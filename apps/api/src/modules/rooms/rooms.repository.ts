@@ -2,6 +2,7 @@ import { db } from '@chat/db'
 import { roomMembers, rooms } from '@chat/schema'
 import { createId } from '@chat/utils'
 import { desc, eq } from 'drizzle-orm'
+import type { CreateRoomInput } from './rooms.schema'
 
 export const roomsRepository = {
   async getUserRooms(userId: string) {
@@ -19,7 +20,7 @@ export const roomsRepository = {
       .orderBy(desc(rooms.updatedAt))
   },
 
-  async createRoom(userId: string, data: { name: string; type: string }) {
+  async createRoom(userId: string, data: CreateRoomInput) {
     return db.transaction(async (tx) => {
       const roomId = createId()
 

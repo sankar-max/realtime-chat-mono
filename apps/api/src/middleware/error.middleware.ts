@@ -18,15 +18,21 @@ export async function errorHandler(error: Error, c: Context) {
   }
 
   if (error instanceof ZodError) {
+    const formattedErrors = error.issues.reduce(
+      (acc, issue) => {
+        const path = issue.path.join('.')
+        if (!acc[path]) acc[path] = issue.message
+        return acc
+      },
+      {} as Record<string, string>,
+    )
+
     return c.json(
       {
         success: false,
         error: 'Validation failed',
         code: 'VALIDATION_ERROR',
-        details: error.issues.map((e) => ({
-          path: e.path.join('.'),
-          message: e.message,
-        })),
+        errors: formattedErrors,
       },
       400,
     )

@@ -44,6 +44,9 @@ importers:
       '@chat/utils':
         specifier: workspace:*
         version: link:../../packages/utils
+      '@chat/validation':
+        specifier: workspace:*
+        version: link:../../packages/validation
       '@hono/node-server':
         specifier: ^1.19.11
         version: 1.19.11(hono@4.12.7)
@@ -154,6 +157,18 @@ importers:
       nanoid:
         specifier: ^5.1.6
         version: 5.1.6
+
+  packages/validation:
+    dependencies:
+      '@chat/schema':
+        specifier: workspace:*
+        version: link:../schema
+      drizzle-zod:
+        specifier: ^0.8.3
+        version: 0.8.3(drizzle-orm@0.45.1(@neondatabase/serverless@1.0.2)(@types/pg@8.18.0)(postgres@3.4.8))(zod@4.3.6)
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
 
 packages:
 
@@ -874,6 +889,12 @@ packages:
       sqlite3:
         optional: true
 
+  drizzle-zod@0.8.3:
+    resolution: {integrity: sha512-66yVOuvGhKJnTdiqj1/Xaaz9/qzOdRJADpDa68enqS6g3t0kpNkwNYjUuaeXgZfO/UWuIM9HIhSlJ6C5ZraMww==}
+    peerDependencies:
+      drizzle-orm: '>=0.36.0'
+      zod: ^3.25.0 || ^4.0.0
+
   ecdsa-sig-formatter@1.0.11:
     resolution: {integrity: sha512-nagl3RYrbNv6kQkeJIpt6NJZy8twLB/2vtz6yN9Z4vRKHN4/QZJIEbqohALSgwKdnksuY3k5Addp5lg8sVoVcQ==}
 
@@ -1532,6 +1553,11 @@ snapshots:
       '@neondatabase/serverless': 1.0.2
       '@types/pg': 8.18.0
       postgres: 3.4.8
+
+  drizzle-zod@0.8.3(drizzle-orm@0.45.1(@neondatabase/serverless@1.0.2)(@types/pg@8.18.0)(postgres@3.4.8))(zod@4.3.6):
+    dependencies:
+      drizzle-orm: 0.45.1(@neondatabase/serverless@1.0.2)(@types/pg@8.18.0)(postgres@3.4.8)
+      zod: 4.3.6
 
   ecdsa-sig-formatter@1.0.11:
     dependencies:

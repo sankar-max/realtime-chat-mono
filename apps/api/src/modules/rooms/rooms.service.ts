@@ -1,5 +1,6 @@
 import { AuthError } from '../../lib/errors'
 import { roomsRepository } from './rooms.repository'
+import type { CreateRoomInput } from './rooms.schema'
 
 export const roomsService = {
   async getUserRooms(userId: string) {
@@ -9,7 +10,7 @@ export const roomsService = {
 
     return roomsRepository.getUserRooms(userId)
   },
-  async createRoom(userId: string, data: { name: string; type: string }) {
+  async createRoom(userId: string, data: CreateRoomInput) {
     if (!userId) {
       throw new AuthError('Unauthorized')
     }

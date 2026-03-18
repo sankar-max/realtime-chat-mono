@@ -1,13 +1,13 @@
-import { zValidator } from '@hono/zod-validator'
 import type { Context } from 'hono'
 import { Hono } from 'hono'
 import { authMiddleware } from '../../middleware/auth.middleware'
+import { validate } from '../../middleware/validator.middleware'
 import { loginSchema, refreshTokenSchema, registerSchema } from './auth.schema'
 import { authService } from './auth.service'
 
 export const authRouter = new Hono()
 
-authRouter.post('/register', zValidator('json', registerSchema), async (c) => {
+authRouter.post('/register', validate('json', registerSchema), async (c) => {
   const data = c.req.valid('json')
   const user = await authService.register(data)
 
@@ -20,7 +20,7 @@ authRouter.post('/register', zValidator('json', registerSchema), async (c) => {
   )
 })
 
-authRouter.post('/login', zValidator('json', loginSchema), async (c) => {
+authRouter.post('/login', validate('json', loginSchema), async (c) => {
   const data = c.req.valid('json')
   const result = await authService.login(data)
 
@@ -30,7 +30,7 @@ authRouter.post('/login', zValidator('json', loginSchema), async (c) => {
   })
 })
 
-authRouter.post('/refresh', zValidator('json', refreshTokenSchema), async (c) => {
+authRouter.post('/refresh', validate('json', refreshTokenSchema), async (c) => {
   const { refreshToken } = c.req.valid('json')
   const result = await authService.refresh(refreshToken)
   return c.json({
