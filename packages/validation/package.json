@@ -1,0 +1,17 @@
+{
+  "name": "@chat/validation",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@chat/schema": "workspace:*",
+    "drizzle-zod": "^0.8.3",
+    "zod": "^4.3.6"
+  }
+}

@@ -1,27 +1,28 @@
-import { zValidator } from '@hono/zod-validator'
 import { Hono } from 'hono'
-import { z } from 'zod'
 import { authMiddleware } from '../../middleware/auth.middleware'
+import { validate } from '../../middleware/validator.middleware'
+import type { AppVariables } from '../../types/context'
+import { createRoomSchema } from './rooms.schema'
+import { roomsService } from './rooms.service'
 
-export const roomsRouter = new Hono()
+export const roomsRouter = new Hono<{ Variables: AppVariables }>()
 
-// Placeholder for room creation to demonstrate the pattern
-roomsRouter.post(
-  '/',
-  authMiddleware,
-  zValidator(
-    'json',
-    z.object({
-      name: z.string().min(3).max(100),
-      description: z.string().optional(),
-    }),
-  ),
-  async (c) => {
-    // const data = c.req.valid('json')
-    // const result = await roomsService.createRoom(data)
-    return c.json({
-      success: true,
-      message: 'Room endpoint placeholder - Follow this pattern for future development',
-    })
-  },
-)
+roomsRouter.get('/', authMiddleware, async (c) => {
+  const userId = c.get('userId')
+  const rooms = await roomsService.getUserRooms(userId)
+  return c.json({
+    success: true,
+    data: rooms,
+  })
+})
+
+roomsRouter.post('/create', authMiddleware, validate('json', createRoomSchema), async (c) => {
+  const userId = c.get('userId')
+  const data = c.req.valid('json')
+  const room = await roomsService.createRoom(userId, data)
+  return c.json({
+    success: true,
+    data: room,
+    message: 'Room created successfully',
+  })
+})

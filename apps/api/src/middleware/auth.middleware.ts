@@ -1,6 +1,6 @@
 import type { Context, Next } from 'hono'
 import { AuthError } from '../lib/errors'
-import { verifyAccessToken } from '../lib/jwt'
+import { type AccessTokenPayload, verifyAccessToken } from '../lib/jwt'
 import { authRepository } from '../modules/auth/auth.repository'
 
 export async function authMiddleware(c: Context, next: Next) {
@@ -16,11 +16,17 @@ export async function authMiddleware(c: Context, next: Next) {
     throw new AuthError('Invalid authorization header')
   }
 
-  const payload = verifyAccessToken(token)
+  let payload: AccessTokenPayload
+  try {
+    payload = verifyAccessToken(token)
+  } catch (err) {
+    throw new AuthError(err instanceof Error ? err.message : 'Invalid token')
+  }
+
   c.set('userId', payload.sub)
   c.set('sessionId', payload.sid)
 
-  const session = await authRepository.findSessionByToken(payload.sid)
+  const session = await authRepository.findSessionById(payload.sid)
   if (!session) {
     throw new AuthError('Invalid session')
   }

@@ -15,7 +15,7 @@ const app = new Hono<{
 
 app.use('*', logger())
 app.use('*', cors())
-
+app.get('/test', (c) => c.text('test ok'))
 app.get('/', (c) => c.text('Hono based API is running'))
 
 app.route('/auth', authRouter)

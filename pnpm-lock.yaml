@@ -44,6 +44,9 @@ importers:
       '@chat/utils':
         specifier: workspace:*
         version: link:../../packages/utils
+      '@chat/validation':
+        specifier: workspace:*
+        version: link:../../packages/validation
       '@hono/node-server':
         specifier: ^1.19.11
         version: 1.19.11(hono@4.12.7)
@@ -109,6 +112,9 @@ importers:
       '@chat/schema':
         specifier: workspace:*
         version: link:../schema
+      '@chat/utils':
+        specifier: workspace:*
+        version: link:../utils
       '@neondatabase/serverless':
         specifier: ^1.0.2
         version: 1.0.2
@@ -122,9 +128,15 @@ importers:
         specifier: ^3.4.8
         version: 3.4.8
     devDependencies:
+      '@faker-js/faker':
+        specifier: ^10.3.0
+        version: 10.3.0
       drizzle-kit:
         specifier: ^0.31.9
         version: 0.31.9
+      tsx:
+        specifier: ^4.21.0
+        version: 4.21.0
 
   packages/schema:
     dependencies:
@@ -145,6 +157,18 @@ importers:
       nanoid:
         specifier: ^5.1.6
         version: 5.1.6
+
+  packages/validation:
+    dependencies:
+      '@chat/schema':
+        specifier: workspace:*
+        version: link:../schema
+      drizzle-zod:
+        specifier: ^0.8.3
+        version: 0.8.3(drizzle-orm@0.45.1(@neondatabase/serverless@1.0.2)(@types/pg@8.18.0)(postgres@3.4.8))(zod@4.3.6)
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
 
 packages:
 
@@ -660,6 +684,10 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@faker-js/faker@10.3.0':
+    resolution: {integrity: sha512-It0Sne6P3szg7JIi6CgKbvTZoMjxBZhcv91ZrqrNuaZQfB5WoqYYbzCUOq89YR+VY8juY9M1vDWmDDa2TzfXCw==}
+    engines: {node: ^20.19.0 || ^22.13.0 || ^23.5.0 || >=24.0.0, npm: '>=10'}
+
   '@hono/node-server@1.19.11':
     resolution: {integrity: sha512-dr8/3zEaB+p0D2n/IUrlPF1HZm586qgJNXK1a9fhg/PzdtkK7Ksd5l312tJX2yBuALqDYBlG20QEbayqPyxn+g==}
     engines: {node: '>=18.14.1'}
@@ -860,6 +888,12 @@ packages:
         optional: true
       sqlite3:
         optional: true
+
+  drizzle-zod@0.8.3:
+    resolution: {integrity: sha512-66yVOuvGhKJnTdiqj1/Xaaz9/qzOdRJADpDa68enqS6g3t0kpNkwNYjUuaeXgZfO/UWuIM9HIhSlJ6C5ZraMww==}
+    peerDependencies:
+      drizzle-orm: '>=0.36.0'
+      zod: ^3.25.0 || ^4.0.0
 
   ecdsa-sig-formatter@1.0.11:
     resolution: {integrity: sha512-nagl3RYrbNv6kQkeJIpt6NJZy8twLB/2vtz6yN9Z4vRKHN4/QZJIEbqohALSgwKdnksuY3k5Addp5lg8sVoVcQ==}
@@ -1424,6 +1458,8 @@ snapshots:
   '@esbuild/win32-x64@0.27.3':
     optional: true
 
+  '@faker-js/faker@10.3.0': {}
+
   '@hono/node-server@1.19.11(hono@4.12.7)':
     dependencies:
       hono: 4.12.7
@@ -1517,6 +1553,11 @@ snapshots:
       '@neondatabase/serverless': 1.0.2
       '@types/pg': 8.18.0
       postgres: 3.4.8
+
+  drizzle-zod@0.8.3(drizzle-orm@0.45.1(@neondatabase/serverless@1.0.2)(@types/pg@8.18.0)(postgres@3.4.8))(zod@4.3.6):
+    dependencies:
+      drizzle-orm: 0.45.1(@neondatabase/serverless@1.0.2)(@types/pg@8.18.0)(postgres@3.4.8)
+      zod: 4.3.6
 
   ecdsa-sig-formatter@1.0.11:
     dependencies:

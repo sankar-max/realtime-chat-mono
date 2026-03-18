@@ -1,7 +1,7 @@
 import { env } from '@chat/config'
 import jwt from 'jsonwebtoken'
 
-type AccessTokenPayload = {
+export type AccessTokenPayload = {
   sub: string
   sid: string
 }
