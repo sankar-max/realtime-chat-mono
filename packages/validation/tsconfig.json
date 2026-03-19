@@ -1,7 +1,11 @@
 {
   "extends": "../tsconfig/base.json",
   "compilerOptions": {
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "paths": {
+      "@chat/schema": ["../schema/src"]
+    }
   },
   "references": [{ "path": "../schema" }],
   "include": ["src/**/*"],

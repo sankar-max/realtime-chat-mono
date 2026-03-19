@@ -10,11 +10,23 @@ async function seed() {
 
   // 1. Load users from user.json
   const userJsonPath = path.resolve(process.cwd(), '../../user.json')
-  let existingUsers: any[] = []
+  type UserJson = {
+    id?: string
+    email: string
+    display_name: string
+    password_hash: string
+    avatar_url?: string
+    bio?: string
+    is_verified?: boolean
+    last_seen_at?: string
+    created_at?: string
+    updated_at?: string
+  }
+  let existingUsers: UserJson[] = []
   try {
     const data = fs.readFileSync(userJsonPath, 'utf8')
     existingUsers = JSON.parse(data)
-  } catch (error) {
+  } catch (_) {
     console.warn('⚠️ Could not load user.json, proceeding with generated users only.')
   }
 
@@ -65,7 +77,7 @@ async function seed() {
     await db.insert(schema.users).values(newUsers.slice(i, i + chunkSize))
   }
 
-  const allUserIds = [...existingUsers.map((u) => u.id), ...newUsers.map((u) => u.id)]
+  const allUserIds = [...existingUsers.map((u) => u.id || createId()), ...newUsers.map((u) => u.id)]
 
   // 3. Create Rooms
   console.log('💬 Creating rooms...')
@@ -78,7 +90,7 @@ async function seed() {
     let u2 = allUserIds[Math.floor(Math.random() * allUserIds.length)]
     while (u1 === u2) u2 = allUserIds[Math.floor(Math.random() * allUserIds.length)]
 
-    const dmKey = [u1, u2].sort().join(':')
+    const dmKey = [u1, u2].sort().join('-')
     if (usedKeys.has(dmKey)) continue
     usedKeys.add(dmKey)
 
@@ -86,6 +98,7 @@ async function seed() {
       id: createId(),
       type: 'direct' as const,
       dmKey,
+      createdBy: u1,
       createdAt: faker.date.past(),
     })
   }
@@ -97,6 +110,7 @@ async function seed() {
       id: createId(),
       name: faker.commerce.productName() + ' Chat',
       type: 'group' as const,
+      createdBy: faker.helpers.arrayElement(allUserIds),
       createdAt: faker.date.past(),
     })
   }
@@ -110,7 +124,7 @@ async function seed() {
 
   // Members for direct rooms
   for (const room of directRooms) {
-    const [u1, u2] = room.dmKey!.split(':')
+    const [u1, u2] = room.dmKey!.split('-')
     roomMembers.push(
       { id: createId(), roomId: room.id, userId: u1, role: 'member' as const },
       { id: createId(), roomId: room.id, userId: u2, role: 'member' as const },
