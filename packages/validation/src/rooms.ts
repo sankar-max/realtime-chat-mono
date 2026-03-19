@@ -16,3 +16,9 @@ export const createRoomSchema = z.object({
 })
 
 export type CreateRoomInput = z.infer<typeof createRoomSchema>
+
+export const createDMRoomSchema = z.object({
+  targetUserId: z.string().min(1, 'Target user id is required'),
+})
+
+export type CreateDMRoomInput = z.infer<typeof createDMRoomSchema>

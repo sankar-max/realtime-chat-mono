@@ -16,4 +16,10 @@ export const roomsService = {
     }
     return roomsRepository.createRoom(userId, data)
   },
+  async createDMRoom(userId: string, targetUserId: string) {
+    if (!userId) {
+      throw new AuthError('Unauthorized')
+    }
+    return roomsRepository.getORCreateDMRoom(userId, targetUserId)
+  },
 }

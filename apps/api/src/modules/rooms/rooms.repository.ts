@@ -20,6 +20,43 @@ export const roomsRepository = {
       .orderBy(desc(rooms.updatedAt))
   },
 
+  async getORCreateDMRoom(userId: string, targetUserId: string) {
+    const dmKey = [userId, targetUserId].sort().join('-')
+    const existingRoom = await db.query.rooms.findFirst({ where: eq(rooms.dmKey, dmKey) })
+    if (existingRoom) return existingRoom
+    const room = db.transaction(async (tx) => {
+      const roomId = createId()
+      const [room] = await tx
+        .insert(rooms)
+        .values({
+          id: roomId,
+          name: dmKey,
+          type: 'direct',
+          createdBy: userId,
+        })
+        .returning()
+
+      await tx.insert(roomMembers).values([
+        {
+          id: createId(),
+          userId,
+          roomId: room.id,
+          role: 'admin',
+          joinedAt: new Date(),
+        },
+        {
+          id: createId(),
+          userId: targetUserId,
+          roomId: room.id,
+          role: 'member',
+          joinedAt: new Date(),
+        },
+      ])
+      return room
+    })
+    return room
+  },
+
   async createRoom(userId: string, data: CreateRoomInput) {
     return db.transaction(async (tx) => {
       const roomId = createId()
