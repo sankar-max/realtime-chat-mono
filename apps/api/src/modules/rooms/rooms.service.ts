@@ -1,4 +1,4 @@
-import { AuthError } from '../../lib/errors'
+import { AuthError, ConflictError } from '../../lib/errors'
 import { roomsRepository } from './rooms.repository'
 import type { CreateRoomInput } from './rooms.schema'
 
@@ -24,7 +24,7 @@ export const roomsService = {
       throw new AuthError('Target user is required')
     }
     if (userId === targetUserId) {
-      throw new Error('Cannot create DM with yourself')
+      throw new ConflictError('Cannot create DM with yourself')
     }
     return roomsRepository.getORCreateDMRoom(userId, targetUserId)
   },

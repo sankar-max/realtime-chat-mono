@@ -24,7 +24,7 @@ export const roomsRepository = {
     const dmKey = [userId, targetUserId].sort().join('-')
     const existingRoom = await db.query.rooms.findFirst({ where: eq(rooms.dmKey, dmKey) })
     if (existingRoom) return existingRoom
-    const room = db.transaction(async (tx) => {
+    const room = await db.transaction(async (tx) => {
       const roomId = createId()
       const [room] = await tx
         .insert(rooms)
@@ -58,7 +58,7 @@ export const roomsRepository = {
   },
 
   async createRoom(userId: string, data: CreateRoomInput) {
-    return db.transaction(async (tx) => {
+    return await db.transaction(async (tx) => {
       const roomId = createId()
 
       const [room] = await tx

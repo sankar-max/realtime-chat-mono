@@ -17,12 +17,6 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
 
-    "forceConsistentCasingInFileNames": true,
-    "paths": {
-      "@chat/config": ["../config/src"],
-      "@chat/schema": ["../schema/src"],
-      "@chat/db": ["../db/src"],
-      "@chat/utils": ["../utils/src"]
-    }
+    "forceConsistentCasingInFileNames": true
   }
 }

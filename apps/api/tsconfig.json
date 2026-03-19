@@ -1,16 +1,9 @@
 {
   "extends": "../../packages/tsconfig/base.json",
   "compilerOptions": {
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "rootDir": "./src"
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"],
-  "references": [
-    { "path": "../../packages/config" },
-    { "path": "../../packages/db" },
-    { "path": "../../packages/schema" },
-    { "path": "../../packages/types" },
-    { "path": "../../packages/ui" },
-    { "path": "../../packages/utils" }
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }
