@@ -1,3 +1,4 @@
+import { createDMRoomSchema } from '@chat/validation'
 import { Hono } from 'hono'
 import { authMiddleware } from '../../middleware/auth.middleware'
 import { validate } from '../../middleware/validator.middleware'
@@ -24,5 +25,16 @@ roomsRouter.post('/create', authMiddleware, validate('json', createRoomSchema), 
     success: true,
     data: room,
     message: 'Room created successfully',
+  })
+})
+roomsRouter.put('/createDM', authMiddleware, validate('json', createDMRoomSchema), async (c) => {
+  const userId = c.get('userId')
+  const { targetUserId } = c.req.valid('json')
+
+  const DMRoom = await roomsService.createDMRoom(userId, targetUserId)
+  return c.json({
+    success: true,
+    data: DMRoom,
+    message: 'Dm room successfully created',
   })
 })

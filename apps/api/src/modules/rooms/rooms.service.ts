@@ -16,4 +16,16 @@ export const roomsService = {
     }
     return roomsRepository.createRoom(userId, data)
   },
+  async createDMRoom(userId: string, targetUserId: string) {
+    if (!userId) {
+      throw new AuthError('Unauthorized')
+    }
+    if (!targetUserId) {
+      throw new AuthError('Target user is required')
+    }
+    if (userId === targetUserId) {
+      throw new Error('Cannot create DM with yourself')
+    }
+    return roomsRepository.getORCreateDMRoom(userId, targetUserId)
+  },
 }

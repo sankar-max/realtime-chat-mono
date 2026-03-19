@@ -1,9 +1,9 @@
 import { createId } from '@chat/utils'
 import bcrypt from 'bcryptjs'
+import { createHash } from 'crypto'
 import { AuthError, ConflictError } from '../../lib/errors'
 import { generateAccessToken } from '../../lib/jwt'
 import { authRepository } from './auth.repository'
-
 export const authService = {
   async register(data: { email: string; password: string; displayName: string }) {
     const existingUser = await authRepository.findUserByEmail(data.email)
@@ -25,7 +25,10 @@ export const authService = {
     return rest
   },
 
-  async login(data: { email: string; password: string }) {
+  async login(
+    data: { email: string; password: string },
+    deviceInfo?: { deviceIp?: string; deviceName?: string; userAgent?: string },
+  ) {
     const user = await authRepository.findUserByEmail(data.email)
 
     if (!user) {
@@ -39,12 +42,13 @@ export const authService = {
     }
 
     const { passwordHash, ...safeUser } = user
-
     const refreshToken = createId()
+    const hashedToken = createHash('sha256').update(refreshToken).digest('hex')
 
     const session = await authRepository.createSession({
       userId: user.id,
-      refreshToken,
+      refreshToken: hashedToken,
+      ...deviceInfo,
     })
 
     const accessToken = generateAccessToken(user.id, session.id)

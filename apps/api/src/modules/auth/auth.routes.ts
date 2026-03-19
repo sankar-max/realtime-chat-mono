@@ -1,3 +1,4 @@
+import { getConnInfo } from '@hono/node-server/conninfo'
 import type { Context } from 'hono'
 import { Hono } from 'hono'
 import { authMiddleware } from '../../middleware/auth.middleware'
@@ -22,7 +23,17 @@ authRouter.post('/register', validate('json', registerSchema), async (c) => {
 
 authRouter.post('/login', validate('json', loginSchema), async (c) => {
   const data = c.req.valid('json')
-  const result = await authService.login(data)
+  const userAgent = c.req.header('user-agent')
+  const info = getConnInfo(c)
+  const deviceIp = info.remote.address
+
+  const { deviceName, ...credentials } = data
+
+  const result = await authService.login(credentials, {
+    deviceIp,
+    userAgent,
+    deviceName,
+  })
 
   return c.json({
     success: true,
