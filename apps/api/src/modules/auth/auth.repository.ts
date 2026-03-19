@@ -58,7 +58,13 @@ export const authRepository = {
     await db.update(sessions).set({ revokedAt: new Date() }).where(eq(sessions.id, sessionId))
   },
 
-  async createSession(data: { userId: string; refreshToken: string }) {
+  async createSession(data: {
+    userId: string
+    refreshToken: string
+    deviceIp?: string
+    deviceName?: string
+    userAgent?: string
+  }) {
     const [session] = await db
       .insert(sessions)
       .values({
@@ -66,6 +72,9 @@ export const authRepository = {
         userId: data.userId,
         refreshToken: data.refreshToken,
         expiresAt: addDays(new Date(), 30),
+        deviceIp: data.deviceIp,
+        deviceName: data.deviceName,
+        userAgent: data.userAgent,
       })
       .returning()
 
