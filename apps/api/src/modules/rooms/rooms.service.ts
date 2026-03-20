@@ -1,4 +1,5 @@
 import { AuthError, ConflictError } from '../../lib/errors'
+import { generateDMKey } from '../../lib/gernerateDMKey'
 import { roomsRepository } from './rooms.repository'
 import type { CreateRoomInput } from './rooms.schema'
 
@@ -26,6 +27,7 @@ export const roomsService = {
     if (userId === targetUserId) {
       throw new ConflictError('Cannot create DM with yourself')
     }
-    return roomsRepository.getORCreateDMRoom(userId, targetUserId)
+    const dmKey = generateDMKey(userId, targetUserId)
+    return roomsRepository.getOrCreateDMRoom(userId, targetUserId, dmKey)
   },
 }

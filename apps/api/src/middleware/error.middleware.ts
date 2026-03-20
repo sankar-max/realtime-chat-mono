@@ -2,19 +2,13 @@ import { env } from '@chat/config'
 import type { Context } from 'hono'
 import { ZodError } from 'zod'
 import { AppError } from '../lib/errors'
+import { sendError } from '../lib/response'
 
 export async function errorHandler(error: Error, c: Context) {
   console.error(`[ERROR] ${c.req.method} ${c.req.url}:`, error)
 
   if (error instanceof AppError) {
-    return c.json(
-      {
-        success: false,
-        error: error.message,
-        code: error.code,
-      },
-      error.statusCode,
-    )
+    return sendError(c, error.message, error.code, error.statusCode)
   }
 
   if (error instanceof ZodError) {
@@ -27,24 +21,10 @@ export async function errorHandler(error: Error, c: Context) {
       {} as Record<string, string>,
     )
 
-    return c.json(
-      {
-        success: false,
-        error: 'Validation failed',
-        code: 'VALIDATION_ERROR',
-        errors: formattedErrors,
-      },
-      400,
-    )
+    return sendError(c, 'Validation failed', 'VALIDATION_ERROR', 400, formattedErrors)
   }
 
   // Fallback for unhandled errors
-  return c.json(
-    {
-      success: false,
-      error: env.NODE_ENV === 'production' ? 'Internal server error' : error.message,
-      code: 'INTERNAL_SERVER_ERROR',
-    },
-    500,
-  )
+  const message = env.NODE_ENV === 'production' ? 'Internal server error' : error.message
+  return sendError(c, message, 'INTERNAL_SERVER_ERROR', 500)
 }
