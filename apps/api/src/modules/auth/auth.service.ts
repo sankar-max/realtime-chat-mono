@@ -56,7 +56,7 @@ export const authService = {
     return {
       user: safeUser,
       accessToken,
-      refreshToken,
+      refreshToken: hashedToken,
     }
   },
   async refresh(refreshToken: string) {
