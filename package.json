@@ -4,7 +4,6 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
-    "typecheck": "turbo run typecheck",
     "format": "turbo run format",
     "lint": "turbo run lint",
     "check": "turbo run check",
@@ -12,6 +11,7 @@
     "clean": "tsc -b --clean",
     "db:generate": "drizzle-kit generate --config packages/db/drizzle.config.ts",
     "db:push": "drizzle-kit push --config packages/db/drizzle.config.ts",
+    "dev:full": "turbo run dev typecheck --parallel",
     "db:studio": "drizzle-kit studio --config packages/db/drizzle.config.ts",
     "prepare": "husky",
     "docker:up": "docker compose up -d",

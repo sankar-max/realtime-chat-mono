@@ -5,13 +5,13 @@
       "cache": false,
       "persistent": true
     },
+    "typecheck": {
+      "cache": false,
+      "persistent": true
+    },
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", "**/*.tsbuildinfo"]
-    },
-    "typecheck": {
-      "dependsOn": ["^typecheck"],
-      "outputs": []
     },
     "lint": {
       "dependsOn": ["^lint"],
