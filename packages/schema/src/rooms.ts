@@ -1,3 +1,4 @@
+import { sql } from 'drizzle-orm'
 import { pgEnum, pgTable, timestamp, uniqueIndex, varchar } from 'drizzle-orm/pg-core'
 import { users } from './users'
 
@@ -22,6 +23,6 @@ export const rooms = pgTable(
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
   },
   (table) => ({
-    dmKeyIndex: uniqueIndex('rooms_dm_key_unique').on(table.dmKey),
+    dmKeyIndex: uniqueIndex('rooms_dm_key_unique').on(table.dmKey).where(sql`type = 'direct'`),
   }),
 )

@@ -19,42 +19,65 @@ export const roomsRepository = {
       .where(eq(roomMembers.userId, userId))
       .orderBy(desc(rooms.updatedAt))
   },
-
-  async getORCreateDMRoom(userId: string, targetUserId: string) {
-    const dmKey = [userId, targetUserId].sort().join('-')
-    const existingRoom = await db.query.rooms.findFirst({ where: eq(rooms.dmKey, dmKey) })
-    if (existingRoom) return existingRoom
-    const room = await db.transaction(async (tx) => {
-      const roomId = createId()
-      const [room] = await tx
-        .insert(rooms)
-        .values({
-          id: roomId,
-          name: dmKey,
-          type: 'direct',
-          createdBy: userId,
-        })
-        .returning()
-
-      await tx.insert(roomMembers).values([
-        {
-          id: createId(),
-          userId,
-          roomId: room.id,
-          role: 'admin',
-          joinedAt: new Date(),
-        },
-        {
-          id: createId(),
-          userId: targetUserId,
-          roomId: room.id,
-          role: 'member',
-          joinedAt: new Date(),
-        },
-      ])
-      return room
+  async isUserInRoom(userId: string, roomId: string) {
+    const member = await db.query.roomMembers.findFirst({
+      where: (rm, { eq, and }) => and(eq(rm.userId, userId), eq(rm.roomId, roomId)),
     })
-    return room
+
+    return !!member
+  },
+  async getOrCreateDMRoom(userId: string, targetUserId: string, dmKey: string) {
+    const existingRoom = await db.query.rooms.findFirst({
+      where: eq(rooms.dmKey, dmKey),
+    })
+
+    if (existingRoom) return existingRoom
+
+    try {
+      return await db.transaction(async (tx) => {
+        const roomId = createId()
+
+        const [room] = await tx
+          .insert(rooms)
+          .values({
+            id: roomId,
+            name: null,
+            type: 'direct',
+            createdBy: userId,
+            dmKey,
+          })
+          .returning()
+
+        await tx.insert(roomMembers).values([
+          {
+            id: createId(),
+            userId,
+            roomId: room.id,
+            role: 'admin',
+            joinedAt: new Date(),
+          },
+          {
+            id: createId(),
+            userId: targetUserId,
+            roomId: room.id,
+            role: 'member',
+            joinedAt: new Date(),
+          },
+        ])
+
+        return room
+      })
+    } catch (err) {
+      const room = await db.query.rooms.findFirst({
+        where: eq(rooms.dmKey, dmKey),
+      })
+
+      if (!room) {
+        throw err
+      }
+
+      return room
+    }
   },
 
   async createRoom(userId: string, data: CreateRoomInput) {
