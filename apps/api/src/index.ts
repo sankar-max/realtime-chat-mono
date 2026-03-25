@@ -5,6 +5,7 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { logger } from 'hono/logger'
 import { errorHandler } from './middleware/error.middleware'
+import { requestIdMiddleware } from './middleware/requestId.middleware'
 import { authRouter } from './modules/auth/auth.routes'
 import { messagesRouter } from './modules/messages/messages.routes'
 import { roomsRouter } from './modules/rooms/rooms.routes'
@@ -14,6 +15,7 @@ const app = new Hono<{
   Variables: AppVariables
 }>()
 
+app.use('*', requestIdMiddleware)
 app.use('*', logger())
 app.use('*', cors())
 app.get('/test', (c) => c.text('test ok'))

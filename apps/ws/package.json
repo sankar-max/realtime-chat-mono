@@ -3,5 +3,11 @@
   "private": true,
   "scripts": {
     "dev": "tsx --watch src/server.ts"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^9.0.3"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.10"
   }
 }

@@ -11,7 +11,6 @@ export const messagesRouter = new Hono<{ Variables: AppVariables }>()
 messagesRouter.post('/', authMiddleware, validate('json', sendMessageSchema), async (c) => {
   const userId = c.get('userId')
   const data = c.req.valid('json')
-  console.log('userId', userId)
 
   const message = await messagesService.sendMessage(userId, data)
 
@@ -23,7 +22,7 @@ messagesRouter.get('/:roomId', authMiddleware, async (c) => {
   const roomId = c.req.param('roomId') as string
   const cursor = c.req.query('cursor')
   const limit = Number(c.req.query('limit') || 20)
-  console.log('userId', userId)
+
   const messages = await messagesService.getMessagesPaginated(userId, roomId, cursor, limit)
 
   return sendSuccess(c, messages)

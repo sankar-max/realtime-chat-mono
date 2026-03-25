@@ -98,7 +98,15 @@ importers:
         specifier: ^5.9.0
         version: 5.9.3
 
-  apps/ws: {}
+  apps/ws:
+    dependencies:
+      jsonwebtoken:
+        specifier: ^9.0.3
+        version: 9.0.3
+    devDependencies:
+      '@types/jsonwebtoken':
+        specifier: ^9.0.10
+        version: 9.0.10
 
   packages/config:
     dependencies:
