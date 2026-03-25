@@ -1,19 +1,13 @@
 import type { SendMessageInput } from '@chat/validation'
-import { AuthError, ConflictError } from '../../lib/errors'
-import { roomsRepository } from '../rooms/rooms.repository'
+import { ConflictError } from '../../lib/errors'
+import { roomsService } from '../rooms/rooms.service'
 import { decodeCursor, encodeCursor } from './messages.cursor'
 import { messagesRepository } from './messages.repository'
 
 export const messagesService = {
   async sendMessage(userId: string, input: SendMessageInput) {
-    if (!userId) throw new AuthError('Unauthorized')
-
-    // 1️⃣ Check membership
-    const isMember = await roomsRepository.isUserInRoom(userId, input.roomId)
-
-    if (!isMember) {
-      throw new AuthError('Not a member of this room')
-    }
+    // 1️⃣ Domain Guard
+    await roomsService.assertRoomAccess(userId, input.roomId)
 
     // 2️⃣ Validate reply
     if (input.replyToId) {
@@ -34,24 +28,12 @@ export const messagesService = {
   },
 
   async getMessages(userId: string, roomId: string) {
-    if (!userId) throw new AuthError('Unauthorized')
-
-    const isMember = await roomsRepository.isUserInRoom(userId, roomId)
-
-    if (!isMember) {
-      throw new AuthError('Not a member of this room')
-    }
-
+    await roomsService.assertRoomAccess(userId, roomId)
     return messagesRepository.getMessagesByRoom(roomId)
   },
+
   async getMessagesPaginated(userId: string, roomId: string, cursor?: string, limit: number = 20) {
-    if (!userId) throw new AuthError('Unauthorized')
-
-    const isMember = await roomsRepository.isUserInRoom(userId, roomId)
-
-    if (!isMember) {
-      throw new AuthError('Not a member of this room')
-    }
+    await roomsService.assertRoomAccess(userId, roomId)
 
     const decodedCursor = cursor ? decodeCursor(cursor) : undefined
 
@@ -60,6 +42,13 @@ export const messagesService = {
       cursor: decodedCursor,
       limit,
     })
+
+    if (messages.length === 0) {
+      return {
+        messages: [],
+        nextCursor: null,
+      }
+    }
 
     const last = messages[messages.length - 1]
 

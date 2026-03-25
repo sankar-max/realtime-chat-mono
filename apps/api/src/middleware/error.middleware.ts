@@ -5,7 +5,8 @@ import { AppError } from '../lib/errors'
 import { sendError } from '../lib/response'
 
 export async function errorHandler(error: Error, c: Context) {
-  console.error(`[ERROR] ${c.req.method} ${c.req.url}:`, error)
+  const requestId = c.get('requestId') || 'no-id'
+  console.error(`[ERROR][${requestId}] ${c.req.method} ${c.req.url}:`, error)
 
   if (error instanceof AppError) {
     return sendError(c, error.message, error.code, error.statusCode)

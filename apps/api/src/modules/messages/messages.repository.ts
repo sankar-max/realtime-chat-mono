@@ -20,13 +20,6 @@ export const messagesRepository = {
 
     return message
   },
-  async isUserInRoom(userId: string, roomId: string) {
-    const member = await db.query.roomMembers.findFirst({
-      where: (rm, { eq, and }) => and(eq(rm.userId, userId), eq(rm.roomId, roomId)),
-    })
-
-    return !!member
-  },
   async getMessagesByRoom(roomId: string) {
     return db.query.messages.findMany({
       where: (m, { eq, and }) => and(eq(m.roomId, roomId), eq(m.isDeletedForEveryone, false)),
