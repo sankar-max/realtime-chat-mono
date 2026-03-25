@@ -1,6 +1,7 @@
 import type { SendMessageInput } from '@chat/validation'
 import { AuthError, ConflictError } from '../../lib/errors'
 import { roomsRepository } from '../rooms/rooms.repository'
+import { decodeCursor, encodeCursor } from './messages.cursor'
 import { messagesRepository } from './messages.repository'
 
 export const messagesService = {
@@ -42,5 +43,36 @@ export const messagesService = {
     }
 
     return messagesRepository.getMessagesByRoom(roomId)
+  },
+  async getMessagesPaginated(userId: string, roomId: string, cursor?: string, limit: number = 20) {
+    if (!userId) throw new AuthError('Unauthorized')
+
+    const isMember = await roomsRepository.isUserInRoom(userId, roomId)
+
+    if (!isMember) {
+      throw new AuthError('Not a member of this room')
+    }
+
+    const decodedCursor = cursor ? decodeCursor(cursor) : undefined
+
+    const messages = await messagesRepository.getMessagesByRoomPaginated({
+      roomId,
+      cursor: decodedCursor,
+      limit,
+    })
+
+    const last = messages[messages.length - 1]
+
+    const nextCursor = last
+      ? encodeCursor({
+          createdAt: last.createdAt.toISOString(),
+          id: last.id,
+        })
+      : null
+
+    return {
+      messages,
+      nextCursor,
+    }
   },
 }
