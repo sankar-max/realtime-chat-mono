@@ -33,7 +33,7 @@ export const messages = pgTable(
     updatedAt: timestamp('updated_at').defaultNow().notNull(),
   },
   (table) => ({
-    roomMessagesIndex: index('messages_room_created_idx').on(table.roomId, table.createdAt),
+    roomMessagesIndex: index('messages_room_created_id_idx').on(table.roomId, table.createdAt.desc(), table.id.desc()),
 
     senderIndex: index('messages_sender_idx').on(table.senderId),
 

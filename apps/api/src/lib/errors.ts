@@ -44,3 +44,14 @@ export class ConflictError extends AppError {
     super(message, 409, 'CONFLICT_ERROR')
   }
 }
+
+export class BadRequestError extends AppError {
+  constructor(message: string) {
+    super(message, 400, 'BAD_REQUEST_ERROR')
+  }
+}
+export class InvalidCursorError extends AppError {
+  constructor(message: string = 'Invalid cursor') {
+    super(message, 400, 'INVALID_CURSOR_ERROR')
+  }
+}

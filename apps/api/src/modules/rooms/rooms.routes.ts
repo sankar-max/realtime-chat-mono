@@ -21,6 +21,7 @@ roomsRouter.post('/create', authMiddleware, validate('json', createRoomSchema), 
   const room = await roomsService.createRoom(userId, data)
   return sendSuccess(c, room, 'Room created successfully')
 })
+
 roomsRouter.put('/dm', authMiddleware, validate('json', createDMRoomSchema), async (c) => {
   const userId = c.get('userId')
   const { targetUserId } = c.req.valid('json')
