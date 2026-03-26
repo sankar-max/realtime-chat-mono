@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "tsx watch --inspect=9231 --watch src/index.ts",
     "clean": "rm -rf dist *.tsbuildinfo",
     "build": "npm run clean && tsc",
     "typecheck": "tsc --noEmit"

@@ -1,5 +1,5 @@
+import type { ServerMessage } from '@chat/ws-types'
 import type { WebSocket } from 'ws'
-
 export type WSConnection = {
   userId: string
   socket: WebSocket
@@ -26,11 +26,10 @@ class ConnectionManager {
       this.connections.delete(ws.userId)
     }
   }
-  sendToUser(userId: string, message: string) {
+  sendToUser(userId: string, message: ServerMessage) {
     const userConnections = this.connections.get(userId)
 
     console.log('📡 sendToUser called for:', userId)
-    console.log('📡 connections map:', this.connections)
 
     if (!userConnections) {
       console.log('❌ No connections found for user')
@@ -38,16 +37,15 @@ class ConnectionManager {
     }
 
     console.log('📡 total sockets:', userConnections.size)
-
+    const serialized = JSON.stringify(message)
     userConnections.forEach((ws) => {
       console.log('📡 socket state:', ws.readyState)
 
-      if (ws.readyState === ws.OPEN) {
-        console.log('🚀 sending message:', message)
-        ws.send(message)
-      } else {
-        console.log('❌ socket not open')
-      }
+      userConnections.forEach((ws) => {
+        if (ws.readyState === ws.OPEN) {
+          ws.send(serialized)
+        }
+      })
     })
   }
   getConnections(userId: string) {

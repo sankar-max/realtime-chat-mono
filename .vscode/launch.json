@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach API",
+      "type": "node",
+      "request": "attach",
+      "port": 9231,
+      "restart": true
+    },
+    {
+      "name": "Attach WS",
+      "type": "node",
+      "request": "attach",
+      "port": 9230,
+      "restart": true
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug Full System",
+      "configurations": ["Attach API", "Attach WS"]
+    }
+  ]
+}

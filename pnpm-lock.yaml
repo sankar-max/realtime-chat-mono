@@ -118,6 +118,9 @@ importers:
       '@chat/utils':
         specifier: workspace:*
         version: link:../../packages/utils
+      '@chat/ws-types':
+        specifier: workspace:*
+        version: link:../../packages/ws-types
       '@types/ws':
         specifier: ^8.18.1
         version: 8.18.1
@@ -224,6 +227,12 @@ importers:
         version: 4.3.6
 
   packages/ws-protocol: {}
+
+  packages/ws-types:
+    dependencies:
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
 
 packages:
 

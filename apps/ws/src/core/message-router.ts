@@ -2,21 +2,22 @@ import { db } from '@chat/db'
 import { emitMessageCreated } from '@chat/events'
 import { messages } from '@chat/schema'
 import { createId } from '@chat/utils'
+import type { ClientMessage, ServerMessage } from '@chat/ws-types'
+import { ClientMessageSchema } from '@chat/ws-types'
 import { connectionManager } from '../connection-manager'
 
-type IncomingMessage = {
-  type: 'PING' | 'SEND_MESSAGE'
-  payload: any
+interface IConnectionManager {
+  sendToUser(userId: string, message: ServerMessage): void
 }
-
 export class MessageRouter {
-  constructor(private connectionManager: any) {}
+  constructor(private connectionManager: IConnectionManager) {}
 
   handle(userId: string, raw: string) {
-    let message: IncomingMessage
+    let message: ClientMessage
 
     try {
-      message = JSON.parse(raw)
+      const parsed = JSON.parse(raw)
+      message = ClientMessageSchema.parse(parsed)
     } catch {
       return
     }
@@ -24,12 +25,9 @@ export class MessageRouter {
     switch (message.type) {
       case 'PING':
         console.log('🏓 PING HANDLER HIT for', userId)
-        this.connectionManager.sendToUser(
-          userId,
-          JSON.stringify({
-            type: 'PONG',
-          }),
-        )
+        this.connectionManager.sendToUser(userId, {
+          type: 'PONG',
+        })
         break
 
       case 'SEND_MESSAGE':
@@ -60,13 +58,10 @@ export class MessageRouter {
       emitMessageCreated({ message })
     } catch (error) {
       console.error('❌ Failed to save message from WS:', error)
-      this.connectionManager.sendToUser(
-        userId,
-        JSON.stringify({
-          type: 'ERROR',
-          payload: { message: 'Failed to send message' },
-        }),
-      )
+      this.connectionManager.sendToUser(userId, {
+        type: 'ERROR',
+        payload: { message: 'Failed to send message' },
+      })
     }
   }
 }
