@@ -1,4 +1,7 @@
-import { env } from '@chat/config'
+import { db } from '@chat/db'
+import { emitMessageCreated } from '@chat/events'
+import { messages } from '@chat/schema'
+import { createId } from '@chat/utils'
 import { connectionManager } from '../connection-manager'
 
 type IncomingMessage = {
@@ -39,20 +42,32 @@ export class MessageRouter {
   }
 
   private async handleSendMessage(userId: string, payload: any) {
-    const { roomId, content } = payload
+    const { roomId, content, replyToId } = payload
 
-    // 🔥 Call API/service (NOT direct send)
-    await fetch(`${env.API_URL}/messages`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${/* token */ ''}`,
-      },
-      body: JSON.stringify({
-        roomId,
-        content,
-      }),
-    })
+    try {
+      const [message] = await db
+        .insert(messages)
+        .values({
+          id: createId(),
+          roomId,
+          senderId: userId,
+          content,
+          type: 'text',
+          replyToId: replyToId ?? null,
+        })
+        .returning()
+
+      emitMessageCreated({ message })
+    } catch (error) {
+      console.error('❌ Failed to save message from WS:', error)
+      this.connectionManager.sendToUser(
+        userId,
+        JSON.stringify({
+          type: 'ERROR',
+          payload: { message: 'Failed to send message' },
+        }),
+      )
+    }
   }
 }
 export const messageRouter = new MessageRouter(connectionManager)

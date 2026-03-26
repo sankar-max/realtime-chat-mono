@@ -1,6 +1,6 @@
+import { type AccessTokenPayload, verifyAccessToken } from '@chat/utils'
 import type { Context, Next } from 'hono'
 import { AuthError } from '../lib/errors'
-import { type AccessTokenPayload, verifyAccessToken } from '../lib/jwt'
 import { authRepository } from '../modules/auth/auth.repository'
 
 export async function authMiddleware(c: Context, next: Next) {

@@ -1,17 +1,32 @@
-import { rooms } from '@chat/schema'
-import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { z } from 'zod'
 
-export const dbRoomSelectSchema = createSelectSchema(rooms)
-export const dbRoomInsertSchema = createInsertSchema(rooms)
+export const roomTypeEnum = z.enum(['direct', 'group'])
+
+export const dbRoomSelectSchema = z.object({
+  id: z.string().max(255),
+  name: z.string().max(255).nullable(),
+  dmKey: z.string().max(255).nullable(),
+  type: roomTypeEnum,
+  createdAt: z.date(),
+  createdBy: z.string().max(255),
+  updatedAt: z.date(),
+})
+
+export const dbRoomInsertSchema = z.object({
+  id: z.string().max(255),
+  name: z.string().max(255).nullable().optional(),
+  dmKey: z.string().max(255).nullable().optional(),
+  type: roomTypeEnum,
+  createdAt: z.date().optional(),
+  createdBy: z.string().max(255),
+  updatedAt: z.date().optional(),
+})
 
 export type Room = z.infer<typeof dbRoomSelectSchema>
 export type InsertRoom = z.infer<typeof dbRoomInsertSchema>
 
-export const roomTypeEnum = z.enum(rooms.type.enumValues)
 export const createRoomSchema = z.object({
   name: z.string().trim().min(1, 'Room name is required').max(100, 'Room name must be less than 100 characters'),
-
   type: roomTypeEnum,
 })
 

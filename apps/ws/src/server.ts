@@ -1,9 +1,9 @@
 import 'dotenv/config'
 import { env } from '@chat/config'
+import { verifyAccessToken } from '@chat/utils'
 import { WebSocketServer } from 'ws'
 import { connectionManager } from './connection-manager'
 import { messageRouter } from './core/message-router'
-import { verifyToken } from './lib/auth'
 
 const wss = new WebSocketServer({ port: env.WS_PORT })
 
@@ -17,7 +17,8 @@ wss.on('connection', (ws, req) => {
       return
     }
 
-    const { userId } = verifyToken(token)
+    const payload = verifyAccessToken(token)
+    const userId = payload.sub
 
     connectionManager.add({ userId, socket: ws })
 

@@ -1,8 +1,7 @@
-import { createId } from '@chat/utils'
+import { createId, generateAccessToken } from '@chat/utils'
 import bcrypt from 'bcryptjs'
 import { createHash } from 'crypto'
 import { AuthError, ConflictError } from '../../lib/errors'
-import { generateAccessToken } from '../../lib/jwt'
 import { authRepository } from './auth.repository'
 export const authService = {
   async register(data: { email: string; password: string; displayName: string }) {

@@ -13,7 +13,6 @@
     "@chat/db": "workspace:*",
     "@chat/events": "workspace:*",
     "@chat/schema": "workspace:*",
-    "@chat/ws": "workspace:*",
     "@chat/utils": "workspace:*",
     "@chat/validation": "workspace:*",
     "@hono/node-server": "^1.19.11",

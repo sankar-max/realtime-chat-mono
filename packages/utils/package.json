@@ -16,6 +16,11 @@
     }
   },
   "dependencies": {
+    "@chat/config": "workspace:*",
+    "jsonwebtoken": "^9.0.3",
     "nanoid": "^5.1.6"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.10"
   }
 }
