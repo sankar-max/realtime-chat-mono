@@ -5,12 +5,13 @@
   "version": "0.1.0",
 
   "scripts": {
-    "dev": "tsx --watch src/server.ts"
+    "dev": "tsx --inspect=9230 --watch src/server.ts"
   },
   "dependencies": {
     "@chat/config": "workspace:*",
     "@chat/db": "workspace:*",
     "@chat/events": "workspace:*",
+    "@chat/ws-types": "workspace:*",
     "@chat/schema": "workspace:*",
     "@chat/utils": "workspace:*",
     "@types/ws": "^8.18.1",

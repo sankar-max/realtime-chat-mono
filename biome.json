@@ -15,6 +15,9 @@
           "level": "warn",
           "fix": "safe"
         }
+      },
+      "suspicious": {
+        "noDebugger": "off"
       }
     }
   },
