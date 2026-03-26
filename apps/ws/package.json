@@ -11,6 +11,7 @@
     "@chat/config": "workspace:*",
     "@chat/db": "workspace:*",
     "@chat/events": "workspace:*",
+    "@chat/module": "workspace:*",
     "@chat/ws-types": "workspace:*",
     "@chat/schema": "workspace:*",
     "@chat/utils": "workspace:*",

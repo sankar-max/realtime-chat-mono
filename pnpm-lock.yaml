@@ -51,6 +51,9 @@ importers:
       '@chat/events':
         specifier: workspace:*
         version: link:../../packages/events
+      '@chat/module':
+        specifier: workspace:*
+        version: link:../../packages/module
       '@chat/schema':
         specifier: workspace:*
         version: link:../../packages/schema
@@ -112,6 +115,9 @@ importers:
       '@chat/events':
         specifier: workspace:*
         version: link:../../packages/events
+      '@chat/module':
+        specifier: workspace:*
+        version: link:../../packages/module
       '@chat/schema':
         specifier: workspace:*
         version: link:../../packages/schema
@@ -189,6 +195,31 @@ importers:
         version: 4.21.0
 
   packages/events: {}
+
+  packages/module:
+    dependencies:
+      '@chat/db':
+        specifier: workspace:*
+        version: link:../db
+      '@chat/events':
+        specifier: workspace:*
+        version: link:../events
+      '@chat/schema':
+        specifier: workspace:*
+        version: link:../schema
+      '@chat/utils':
+        specifier: workspace:*
+        version: link:../utils
+      '@chat/validation':
+        specifier: workspace:*
+        version: link:../validation
+      drizzle-orm:
+        specifier: ^0.45.1
+        version: 0.45.1(@neondatabase/serverless@1.0.2)(@types/pg@8.20.0)(postgres@3.4.8)
+    devDependencies:
+      typescript:
+        specifier: ^5.4.5
+        version: 5.9.3
 
   packages/schema:
     dependencies:

@@ -1,3 +1,4 @@
+import { roomsService } from '@chat/module'
 import { createDMRoomSchema } from '@chat/validation'
 import { Hono } from 'hono'
 import { sendSuccess } from '../../lib/response'
@@ -5,7 +6,6 @@ import { authMiddleware } from '../../middleware/auth.middleware'
 import { validate } from '../../middleware/validator.middleware'
 import type { AppVariables } from '../../types/context'
 import { createRoomSchema } from './rooms.schema'
-import { roomsService } from './rooms.service'
 
 export const roomsRouter = new Hono<{ Variables: AppVariables }>()
 

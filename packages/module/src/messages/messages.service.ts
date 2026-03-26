@@ -1,6 +1,6 @@
 import { emitMessageCreated } from '@chat/events'
 import type { SendMessageInput } from '@chat/validation'
-import { ConflictError } from '../../lib/errors'
+import { ConflictError } from '../errors'
 import { roomsService } from '../rooms/rooms.service'
 import { decodeCursor, encodeCursor } from './messages.cursor'
 import { messagesRepository } from './messages.repository'

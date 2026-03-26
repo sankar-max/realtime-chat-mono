@@ -1,4 +1,4 @@
-import { InvalidCursorError } from '../../lib/errors'
+import { InvalidCursorError } from '../errors'
 
 export type MessageCursor = {
   createdAt: string

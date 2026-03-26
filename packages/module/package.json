@@ -1,0 +1,30 @@
+{
+  "name": "@chat/module",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "dev": "tsc -w",
+    "clean": "rm -rf dist *.tsbuildinfo",
+    "build": "npm run clean && tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome lint ."
+  },
+  "dependencies": {
+    "@chat/db": "workspace:*",
+    "@chat/schema": "workspace:*",
+    "@chat/utils": "workspace:*",
+    "@chat/validation": "workspace:*",
+    "@chat/events": "workspace:*",
+    "drizzle-orm": "^0.45.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}

@@ -1,7 +1,4 @@
-import { db } from '@chat/db'
-import { emitMessageCreated } from '@chat/events'
-import { messages } from '@chat/schema'
-import { createId } from '@chat/utils'
+import { messagesService } from '@chat/module'
 import type { ClientMessage, ServerMessage } from '@chat/ws-types'
 import { ClientMessageSchema } from '@chat/ws-types'
 import { connectionManager } from '../connection-manager'
@@ -43,19 +40,11 @@ export class MessageRouter {
     const { roomId, content, replyToId } = payload
 
     try {
-      const [message] = await db
-        .insert(messages)
-        .values({
-          id: createId(),
-          roomId,
-          senderId: userId,
-          content,
-          type: 'text',
-          replyToId: replyToId ?? null,
-        })
-        .returning()
-
-      emitMessageCreated({ message })
+      await messagesService.sendMessage(userId, {
+        roomId,
+        content,
+        replyToId,
+      })
     } catch (error) {
       console.error('❌ Failed to save message from WS:', error)
       this.connectionManager.sendToUser(userId, {

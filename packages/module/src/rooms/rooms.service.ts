@@ -1,5 +1,5 @@
-import { AuthError, ConflictError } from '../../lib/errors'
-import { generateDMKey } from '../../lib/gernerateDMKey'
+import { AuthError, ConflictError } from '../errors'
+import { generateDMKey } from '../utils/generateDMKey'
 import { roomsRepository } from './rooms.repository'
 import type { CreateRoomInput } from './rooms.schema'
 export const roomsService = {
