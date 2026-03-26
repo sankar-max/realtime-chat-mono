@@ -15,6 +15,13 @@
       "when": 1773405269824,
       "tag": "0001_certain_bishop",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1774511923664,
+      "tag": "0002_overjoyed_donald_blake",
+      "breakpoints": true
     }
   ]
 }

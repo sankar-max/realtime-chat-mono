@@ -55,7 +55,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\"\n}",
+              "raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\",\n    \"deviceName\": \"MacBook Pro\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -198,7 +198,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"name\": \"General\",\n    \"type\": \"public\"\n}",
+              "raw": "{\n    \"name\": \"General Discussion\",\n    \"type\": \"group\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -228,14 +228,88 @@
             },
             "method": "PUT",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"targetUserId\": \"REPLACE_WITH_USER_ID\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
-              "raw": "{{baseUrl}}/rooms/createDM?targetId=REPLACE_WITH_USER_ID",
+              "raw": "{{baseUrl}}/rooms/dm",
               "host": ["{{baseUrl}}"],
-              "path": ["rooms", "createDM"],
+              "path": ["rooms", "dm"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Messages",
+      "item": [
+        {
+          "name": "Send Message",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"roomId\": \"REPLACE_WITH_ROOM_ID\",\n    \"content\": \"Hello, everyone!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/messages",
+              "host": ["{{baseUrl}}"],
+              "path": ["messages"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Messages",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/messages/REPLACE_WITH_ROOM_ID?limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["messages", "REPLACE_WITH_ROOM_ID"],
               "query": [
                 {
-                  "key": "targetId",
-                  "value": "REPLACE_WITH_USER_ID"
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "cursor",
+                  "value": "",
+                  "disabled": true
                 }
               ]
             }

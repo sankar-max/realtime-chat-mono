@@ -10,7 +10,9 @@
     }
   },
   "scripts": {
-    "build": "tsc",
+    "dev": "tsc -w",
+    "clean": "rm -rf dist *.tsbuildinfo",
+    "build": "npm run clean && tsc",
     "typecheck": "tsc --noEmit",
     "lint": "biome lint ."
   },

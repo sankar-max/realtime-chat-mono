@@ -1,60 +1,42 @@
-import { type WebSocket, WebSocketServer } from 'ws'
+import 'dotenv/config'
+import { env } from '@chat/config'
+import { verifyAccessToken } from '@chat/utils'
+import { WebSocketServer } from 'ws'
+import { connectionManager } from './connection-manager'
+import { messageRouter } from './core/message-router'
 
-const wss = new WebSocketServer({
-  port: 3002,
-})
-
-// userId → multiple connections (tabs/devices)
-const connections = new Map<string, Set<WebSocket>>()
-
-console.log('🚀 WS server running on ws://localhost:3002')
+const wss = new WebSocketServer({ port: env.WS_PORT })
 
 wss.on('connection', (ws, req) => {
-  // 1️⃣ Extract userId from URL
-  const url = new URL(req.url || '', 'http://localhost')
-  const userId = url.searchParams.get('userId')
+  try {
+    const url = new URL(req.url || '', 'http://localhost')
+    const token = url.searchParams.get('token')
 
-  if (!userId) {
-    ws.close()
-    return
-  }
-
-  // 2️⃣ Get or create user's connection set
-  let userConnections = connections.get(userId)
-
-  if (!userConnections) {
-    userConnections = new Set()
-    connections.set(userId, userConnections)
-  }
-
-  // 3️⃣ Add this socket to user's connections
-  userConnections.add(ws)
-
-  console.log(`✅ ${userId} connected (total: ${userConnections.size})`)
-
-  // 4️⃣ Handle incoming messages
-  ws.on('message', (message) => {
-    const text = message.toString()
-    console.log(`📩 ${userId}:`, text)
-
-    // 🔥 Example: send message to ALL user's tabs
-    userConnections?.forEach((socket) => {
-      socket.send(`Echo: ${text}`)
-    })
-  })
-
-  // 5️⃣ Handle disconnect
-  ws.on('close', () => {
-    const userConnections = connections.get(userId)
-
-    if (!userConnections) return
-
-    userConnections.delete(ws)
-
-    if (userConnections.size === 0) {
-      connections.delete(userId)
+    if (!token) {
+      ws.close(4001, 'Unauthorized')
+      return
     }
 
-    console.log(`❌ ${userId} disconnected`)
-  })
+    const payload = verifyAccessToken(token)
+    const userId = payload.sub
+
+    connectionManager.add({ userId, socket: ws })
+
+    ws.on('message', (data) => {
+      const text = data.toString()
+
+      console.log('🔥 SERVER RECEIVED:', text)
+
+      messageRouter.handle(userId, text)
+    })
+
+    ws.on('close', () => {
+      connectionManager.remove({ userId, socket: ws })
+    })
+  } catch (error) {
+    console.error('❌ Auth failed:', error)
+    ws.close(4001, 'Invalid token')
+  }
 })
+
+console.log(`🚀 WS server running on ws://localhost:${env.WS_PORT}`)

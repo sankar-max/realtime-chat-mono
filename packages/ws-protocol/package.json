@@ -1,16 +1,25 @@
 {
-  "name": "@chat/types",
+  "name": "@chat/ws-protocol",
+  "version": "1.0.0",
   "private": true,
-  "version": "0.1.0",
   "type": "module",
+
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+
+  "files": [
+    "dist"
+  ],
+
   "scripts": {
     "dev": "tsc -w",
     "clean": "rm -rf dist *.tsbuildinfo",
     "build": "npm run clean && tsc",
     "typecheck": "tsc --noEmit",
     "lint": "biome lint ."
-  },
-  "exports": {
-    ".": "./src/index.ts"
   }
 }

@@ -20,6 +20,7 @@ export function generateAccessToken(userId: string, sessionId: string): string {
     { expiresIn: '15m' },
   )
 }
+
 export function verifyAccessToken(token: string): AccessTokenPayload {
   if (!token) {
     throw new Error('Token required')

@@ -4,12 +4,14 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc",
+    "clean": "rm -rf dist *.tsbuildinfo",
+    "build": "npm run clean && tsc",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@chat/config": "workspace:*",
     "@chat/db": "workspace:*",
+    "@chat/events": "workspace:*",
     "@chat/schema": "workspace:*",
     "@chat/utils": "workspace:*",
     "@chat/validation": "workspace:*",
