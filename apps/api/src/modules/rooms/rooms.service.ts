@@ -2,7 +2,6 @@ import { AuthError, ConflictError } from '../../lib/errors'
 import { generateDMKey } from '../../lib/gernerateDMKey'
 import { roomsRepository } from './rooms.repository'
 import type { CreateRoomInput } from './rooms.schema'
-
 export const roomsService = {
   async assertRoomAccess(userId: string, roomId: string) {
     if (!userId) throw new AuthError('Unauthorized')

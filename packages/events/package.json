@@ -1,24 +1,24 @@
 {
-  "name": "@chat/schema",
+  "name": "@chat/events",
+  "version": "1.0.0",
   "private": true,
-  "version": "0.1.0",
   "type": "module",
+
   "exports": {
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     }
   },
+
+  "files": [
+    "dist"
+  ],
+
   "scripts": {
     "clean": "rm -rf dist *.tsbuildinfo",
     "build": "npm run clean && tsc",
     "typecheck": "tsc --noEmit",
     "lint": "biome lint ."
-  },
-  "dependencies": {
-    "drizzle-orm": "^0.45.1"
-  },
-  "devDependencies": {
-    "drizzle-kit": "^0.31.9"
   }
 }

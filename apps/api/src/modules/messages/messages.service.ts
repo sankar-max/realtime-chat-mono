@@ -1,3 +1,4 @@
+import { emitMessageCreated } from '@chat/events'
 import type { SendMessageInput } from '@chat/validation'
 import { ConflictError } from '../../lib/errors'
 import { roomsService } from '../rooms/rooms.service'
@@ -6,10 +7,8 @@ import { messagesRepository } from './messages.repository'
 
 export const messagesService = {
   async sendMessage(userId: string, input: SendMessageInput) {
-    // 1️⃣ Domain Guard
     await roomsService.assertRoomAccess(userId, input.roomId)
 
-    // 2️⃣ Validate reply
     if (input.replyToId) {
       const replyMsg = await messagesRepository.getMessageById(input.replyToId)
 
@@ -18,13 +17,14 @@ export const messagesService = {
       }
     }
 
-    // 3️⃣ Create message
-    return messagesRepository.createMessage({
+    const message = await messagesRepository.createMessage({
       roomId: input.roomId,
       senderId: userId,
       content: input.content,
       replyToId: input.replyToId,
     })
+    emitMessageCreated({ message })
+    return message
   },
 
   async getMessages(userId: string, roomId: string) {

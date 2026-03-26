@@ -10,7 +10,8 @@
     }
   },
   "scripts": {
-    "build": "tsc",
+    "clean": "rm -rf dist *.tsbuildinfo",
+    "build": "npm run clean && tsc",
     "typecheck": "tsc --noEmit",
     "lint": "biome lint .",
     "db:seed": "tsx src/seed.ts"
