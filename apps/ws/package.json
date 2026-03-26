@@ -1,11 +1,16 @@
 {
   "name": "@chat/ws",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "tsx --watch src/server.ts"
   },
   "dependencies": {
-    "jsonwebtoken": "^9.0.3"
+    "@chat/config": "workspace:*",
+    "@types/ws": "^8.18.1",
+    "dotenv": "^17.3.1",
+    "jsonwebtoken": "^9.0.3",
+    "ws": "^8.20.0"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.10"
