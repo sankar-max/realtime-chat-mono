@@ -1,3 +1,4 @@
+import { env } from '@chat/config'
 import { connectionManager } from '../connection-manager'
 
 type IncomingMessage = {
@@ -37,20 +38,21 @@ export class MessageRouter {
     }
   }
 
-  private handleSendMessage(userId: string, payload: any) {
-    const { toUserId, content } = payload
+  private async handleSendMessage(userId: string, payload: any) {
+    const { roomId, content } = payload
 
-    // 🔥 For now: direct send (DM)
-    this.connectionManager.sendToUser(
-      toUserId,
-      JSON.stringify({
-        type: 'NEW_MESSAGE',
-        payload: {
-          from: userId,
-          content,
-        },
+    // 🔥 Call API/service (NOT direct send)
+    await fetch(`${env.API_URL}/messages`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${/* token */ ''}`,
+      },
+      body: JSON.stringify({
+        roomId,
+        content,
       }),
-    )
+    })
   }
 }
 export const messageRouter = new MessageRouter(connectionManager)
