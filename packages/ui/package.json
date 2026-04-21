@@ -11,9 +11,14 @@
   },
   "scripts": {
     "dev": "tsc -w",
-    "clean": "rm -rf dist *.tsbuildinfo",
+    "clean": "rimraf --glob dist \"*.tsbuildinfo\"",
     "build": "npm run clean && tsc",
     "typecheck": "tsc --noEmit",
     "lint": "biome lint ."
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.5.0",
+    "postcss": "^8.5.10",
+    "tailwindcss": "^4.2.3"
   }
 }

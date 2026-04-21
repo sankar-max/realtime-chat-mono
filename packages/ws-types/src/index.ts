@@ -1,5 +1,7 @@
 import { z } from 'zod'
 
+// ─── Client → Server ────────────────────────────────────────────────────────
+
 export const ClientMessageSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('PING') }),
 
@@ -11,13 +13,46 @@ export const ClientMessageSchema = z.discriminatedUnion('type', [
       replyToId: z.string().optional(),
     }),
   }),
+
+  z.object({
+    type: z.literal('MARK_READ'),
+    payload: z.object({
+      roomId: z.string(),
+      lastReadMessageId: z.string(),
+    }),
+  }),
 ])
 
 export type ClientMessage = z.infer<typeof ClientMessageSchema>
 
-// 👇 ADD THIS ALSO (IMPORTANT)
+// ─── Server → Client ────────────────────────────────────────────────────────
+
 export const ServerMessageSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('PONG') }),
+
+  z.object({
+    type: z.literal('NEW_MESSAGE'),
+    payload: z.object({
+      id: z.string(),
+      roomId: z.string(),
+      senderId: z.string(),
+      content: z.string().nullable(),
+      type: z.string(),
+      replyToId: z.string().nullable().optional(),
+      createdAt: z.string(),
+    }),
+  }),
+
+  z.object({
+    type: z.literal('RECEIPT_UPDATE'),
+    payload: z.object({
+      roomId: z.string(),
+      messageId: z.string(),
+      userId: z.string(),
+      status: z.enum(['delivered', 'read']),
+      updatedAt: z.string(),
+    }),
+  }),
 
   z.object({
     type: z.literal('ERROR'),

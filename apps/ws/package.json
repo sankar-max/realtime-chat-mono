@@ -5,7 +5,10 @@
   "version": "0.1.0",
 
   "scripts": {
-    "dev": "tsx --inspect=9230 --watch src/server.ts"
+    "dev": "tsx --inspect=9230 --watch src/server.ts",
+    "clean": "rimraf --glob dist \"*.tsbuildinfo\"",
+    "build": "npm run clean && tsc",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@chat/config": "workspace:*",
@@ -17,7 +20,8 @@
     "@types/ws": "^8.18.1",
     "dotenv": "^17.3.1",
     "jsonwebtoken": "^9.0.3",
-    "ws": "^8.20.0"
+    "ws": "^8.20.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.10"

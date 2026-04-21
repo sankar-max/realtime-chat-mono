@@ -1,4 +1,3 @@
-import { emitMessageCreated } from '@chat/events'
 import type { SendMessageInput } from '@chat/validation'
 import { ConflictError } from '../../lib/errors'
 import { roomsService } from '../rooms/rooms.service'
@@ -23,7 +22,6 @@ export const messagesService = {
       content: input.content,
       replyToId: input.replyToId,
     })
-    emitMessageCreated({ message })
     return message
   },
 
@@ -63,5 +61,10 @@ export const messagesService = {
       messages,
       nextCursor,
     }
+  },
+
+  async getRoomReceipts(userId: string, roomId: string) {
+    await roomsService.assertRoomAccess(userId, roomId)
+    return messagesRepository.getRoomReceipts(roomId)
   },
 }

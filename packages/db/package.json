@@ -11,7 +11,7 @@
   },
   "scripts": {
     "dev": "tsc -w",
-    "clean": "rm -rf dist *.tsbuildinfo",
+    "clean": "rimraf --glob dist \"*.tsbuildinfo\"",
     "build": "npm run clean && tsc",
     "typecheck": "tsc --noEmit",
     "lint": "biome lint .",

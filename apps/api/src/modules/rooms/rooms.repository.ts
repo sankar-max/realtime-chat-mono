@@ -1,7 +1,7 @@
 import { db } from '@chat/db'
-import { roomMembers, rooms } from '@chat/schema'
+import { messages, roomMembers, rooms } from '@chat/schema'
 import { createId } from '@chat/utils'
-import { desc, eq } from 'drizzle-orm'
+import { desc, eq, sql } from 'drizzle-orm'
 import type { CreateRoomInput } from './rooms.schema'
 
 export const roomsRepository = {
@@ -13,6 +13,12 @@ export const roomsRepository = {
         type: rooms.type,
         createdAt: rooms.createdAt,
         updatedAt: rooms.updatedAt,
+        memberCount:
+          sql<number>`(SELECT count(*) FROM ${roomMembers} WHERE ${roomMembers.roomId} = ${rooms.id})`.mapWith(Number),
+        lastMessage: sql<
+          string | null
+        >`(SELECT content FROM ${messages} WHERE ${messages.roomId} = ${rooms.id} ORDER BY ${messages.createdAt} DESC LIMIT 1)`,
+        lastMessageAt: sql<Date | null>`(SELECT created_at FROM ${messages} WHERE ${messages.roomId} = ${rooms.id} ORDER BY ${messages.createdAt} DESC LIMIT 1)`,
       })
       .from(rooms)
       .innerJoin(roomMembers, eq(rooms.id, roomMembers.roomId))

@@ -1,5 +1,6 @@
 import 'dotenv/config'
 import { env } from '@chat/config'
+import { db } from '@chat/db'
 import { verifyAccessToken } from '@chat/utils'
 import { WebSocketServer } from 'ws'
 import { connectionManager } from './connection-manager'
@@ -7,7 +8,7 @@ import { messageRouter } from './core/message-router'
 
 const wss = new WebSocketServer({ port: env.WS_PORT })
 
-wss.on('connection', (ws, req) => {
+wss.on('connection', async (ws, req) => {
   try {
     const url = new URL(req.url || '', 'http://localhost')
     const token = url.searchParams.get('token')
@@ -17,16 +18,31 @@ wss.on('connection', (ws, req) => {
       return
     }
 
-    const payload = verifyAccessToken(token)
+    // Verify JWT signature + expiry
+    let payload: ReturnType<typeof verifyAccessToken>
+    try {
+      payload = verifyAccessToken(token)
+    } catch {
+      ws.close(4001, 'Invalid token')
+      return
+    }
+
     const userId = payload.sub
+
+    // Validate session: check it exists, isn't revoked, isn't expired
+    const session = await db.query.sessions.findFirst({
+      where: (s, { eq }) => eq(s.id, payload.sid),
+    })
+
+    if (!session || session.revokedAt || session.expiresAt < new Date()) {
+      ws.close(4001, 'Session invalid or expired')
+      return
+    }
 
     connectionManager.add({ userId, socket: ws })
 
     ws.on('message', (data) => {
       const text = data.toString()
-
-      console.log('🔥 SERVER RECEIVED:', text)
-
       messageRouter.handle(userId, text)
     })
 
@@ -34,8 +50,8 @@ wss.on('connection', (ws, req) => {
       connectionManager.remove({ userId, socket: ws })
     })
   } catch (error) {
-    console.error('❌ Auth failed:', error)
-    ws.close(4001, 'Invalid token')
+    console.error('❌ WS connection error:', error)
+    ws.close(4001, 'Connection error')
   }
 })
 

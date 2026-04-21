@@ -17,6 +17,7 @@ export const env = createEnv({
     JWT_SECRET: z.string().min(8),
     PORT: z.coerce.number().default(3001),
     WS_PORT: z.coerce.number().default(3002),
+    ALLOWED_ORIGIN: z.string().url().default('http://localhost:3000'),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
