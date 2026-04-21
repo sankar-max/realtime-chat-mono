@@ -3,6 +3,8 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "dev": "tsc -w",
     "clean": "rimraf --glob dist \"*.tsbuildinfo\"",
@@ -11,6 +13,9 @@
     "lint": "biome lint ."
   },
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
   }
 }

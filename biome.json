@@ -17,7 +17,15 @@
         }
       },
       "suspicious": {
-        "noDebugger": "off"
+        "noDebugger": "off",
+        "noUnknownAtRules": "off"
+      }
+    }
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
       }
     }
   },
