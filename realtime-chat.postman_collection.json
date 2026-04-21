@@ -315,6 +315,29 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Get Room Receipts",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/messages/{{roomId}}/receipts",
+              "host": ["{{baseUrl}}"],
+              "path": ["messages", "{{roomId}}", "receipts"]
+            }
+          },
+          "response": []
         }
       ]
     }
@@ -353,6 +376,11 @@
     },
     {
       "key": "userId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "roomId",
       "value": "",
       "type": "string"
     }

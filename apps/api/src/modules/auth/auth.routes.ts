@@ -12,7 +12,6 @@ export const authRouter = new Hono()
 authRouter.post('/register', validate('json', registerSchema), async (c) => {
   const data = c.req.valid('json')
   const user = await authService.register(data)
-
   return sendSuccess(c, user, undefined, 201)
 })
 

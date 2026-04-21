@@ -21,9 +21,16 @@ messagesRouter.get('/:roomId', authMiddleware, async (c) => {
   const userId = c.get('userId')
   const roomId = c.req.param('roomId') as string
   const cursor = c.req.query('cursor')
-  const limit = Number(c.req.query('limit') || 20)
+  const limit = Math.min(Number(c.req.query('limit') || 20), 100)
 
   const messages = await messagesService.getMessagesPaginated(userId, roomId, cursor, limit)
 
   return sendSuccess(c, messages)
+})
+
+messagesRouter.get('/:roomId/receipts', authMiddleware, async (c) => {
+  const userId = c.get('userId')
+  const roomId = c.req.param('roomId')
+  const receipts = await messagesService.getRoomReceipts(userId, roomId!)
+  return sendSuccess(c, receipts)
 })

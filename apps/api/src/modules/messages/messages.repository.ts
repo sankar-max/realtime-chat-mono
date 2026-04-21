@@ -1,7 +1,7 @@
 import { db } from '@chat/db'
-import { messages } from '@chat/schema'
+import { messageReceipts, messages } from '@chat/schema'
 import { createId } from '@chat/utils'
-import { eq } from 'drizzle-orm'
+import { desc, eq } from 'drizzle-orm'
 import type { MessageCursor } from './messages.cursor'
 
 export const messagesRepository = {
@@ -53,5 +53,19 @@ export const messagesRepository = {
     return db.query.messages.findFirst({
       where: eq(messages.id, id),
     })
+  },
+
+  async getRoomReceipts(roomId: string) {
+    return db
+      .select({
+        messageId: messageReceipts.messageId,
+        userId: messageReceipts.userId,
+        status: messageReceipts.status,
+        updatedAt: messageReceipts.updatedAt,
+      })
+      .from(messageReceipts)
+      .innerJoin(messages, eq(messageReceipts.messageId, messages.id))
+      .where(eq(messages.roomId, roomId))
+      .orderBy(desc(messageReceipts.updatedAt))
   },
 }

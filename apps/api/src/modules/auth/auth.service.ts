@@ -1,7 +1,7 @@
 import { createId, generateAccessToken } from '@chat/utils'
 import bcrypt from 'bcryptjs'
 import { createHash } from 'crypto'
-import { AuthError, ConflictError } from '../../lib/errors'
+import { AuthError, ConflictError, NotFoundError } from '../../lib/errors'
 import { authRepository } from './auth.repository'
 export const authService = {
   async register(data: { email: string; password: string; displayName: string }) {
@@ -55,7 +55,7 @@ export const authService = {
     return {
       user: safeUser,
       accessToken,
-      refreshToken: hashedToken,
+      refreshToken: refreshToken, // Fixed: return raw token
     }
   },
   async refresh(refreshToken: string) {
@@ -63,7 +63,8 @@ export const authService = {
       throw new AuthError('Refresh token required')
     }
 
-    const session = await authRepository.findSessionByToken(refreshToken)
+    const hashedToken = createHash('sha256').update(refreshToken).digest('hex')
+    const session = await authRepository.findSessionByToken(hashedToken)
 
     if (!session) {
       throw new AuthError('Invalid session')
@@ -86,7 +87,7 @@ export const authService = {
   },
   async getMe(userId: string) {
     const user = await authRepository.findUserById(userId)
-    if (!user) return null
+    if (!user) throw new NotFoundError('User not found')
     const { passwordHash: userPassword, ...rest } = user
     return rest
   },

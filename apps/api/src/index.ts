@@ -17,7 +17,12 @@ const app = new Hono<{
 
 app.use('*', requestIdMiddleware)
 app.use('*', logger())
-app.use('*', cors())
+app.use(
+  '*',
+  cors({
+    origin: env.ALLOWED_ORIGIN,
+  }),
+)
 app.get('/test', (c) => c.text('test ok'))
 app.get('/', (c) => c.text('Hono based API is running'))
 
