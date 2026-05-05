@@ -44,11 +44,11 @@ export function CreateChatDialog() {
   const handleCreateGroup = async () => {
     if (!groupName.trim() || selectedUsers.size === 0) return
     try {
-      const room = await roomService.createRoom(
-        groupName.trim(),
-        'group',
-        Array.from(selectedUsers)
-      )
+      const room = await roomService.createRoom({
+        name: groupName.trim(),
+        type: 'group',
+        memberIds: Array.from(selectedUsers)
+      })
       queryClient.invalidateQueries({ queryKey: ['rooms'] })
       setOpen(false)
       setGroupName('')

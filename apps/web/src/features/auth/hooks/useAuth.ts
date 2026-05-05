@@ -72,6 +72,19 @@ export function useAuth() {
     },
   })
 
+  const updateProfileMutation = useMutation({
+    mutationFn: (data: import('@chat/validation').UpdateUserInput) => authService.updateProfile(data),
+    onSuccess: (response) => {
+      setUser(response.data)
+      queryClient.setQueryData(['auth', 'me'], { data: response.data })
+      toast.success('Profile updated successfully')
+    },
+    onError: (error: any) => {
+      const message = error.response?.data?.message || 'Failed to update profile'
+      toast.error(message)
+    },
+  })
+
   const isInitialLoading = userQuery.isPending && userQuery.fetchStatus !== 'idle'
 
   return {
@@ -83,5 +96,7 @@ export function useAuth() {
     register: registerMutation.mutate,
     isRegistering: registerMutation.isPending,
     logout: logoutMutation.mutate,
+    updateProfile: updateProfileMutation.mutate,
+    isUpdatingProfile: updateProfileMutation.isPending,
   }
 }

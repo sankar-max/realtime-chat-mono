@@ -42,7 +42,7 @@ export function MessageList({ messages, onRetry, onDismiss }: MessageListProps) 
 
   if (messages.length === 0) {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center gap-3 text-zinc-400 dark:text-zinc-600">
+      <div className="flex flex-1 flex-col items-center justify-center gap-3 text-muted-foreground">
         <div className="text-5xl">💬</div>
         <p className="text-sm font-medium">No messages yet. Say hello!</p>
       </div>
@@ -89,16 +89,22 @@ export function MessageList({ messages, onRetry, onDismiss }: MessageListProps) 
               {!isMe && (
                 <div
                   className={cn(
-                    'mr-2 h-8 w-8 shrink-0 rounded-full flex items-center justify-center text-xs font-bold text-white self-end',
-                    'bg-gradient-to-br from-violet-500 to-indigo-600',
+                    'mr-2 h-8 w-8 shrink-0 rounded-full flex items-center justify-center text-xs font-bold self-end',
+                    'bg-primary text-primary-foreground',
                     isSameAsNext ? 'invisible' : 'visible',
                   )}
+                  title={message.senderName || 'User'}
                 >
-                  {(message.senderId ?? 'U')[0].toUpperCase()}
+                  {(message.senderName?.[0] ?? message.senderId?.[0] ?? 'U').toUpperCase()}
                 </div>
               )}
 
-              <div className={cn('flex flex-col max-w-[72%]', isMe ? 'items-end' : 'items-start')}>
+              <div className={cn('flex flex-col max-w-[50%] md:max-w-md', isMe ? 'items-end' : 'items-start')}>
+                {!isMe && !isSameAsPrev && message.senderName && (
+                  <span className="text-[11px] text-muted-foreground font-medium mb-1 ml-1">
+                    {message.senderName}
+                  </span>
+                )}
                 {/* Bubble */}
                 <div
                   className={cn(
@@ -107,15 +113,15 @@ export function MessageList({ messages, onRetry, onDismiss }: MessageListProps) 
                     'rounded-2xl',
                     isMe
                       ? cn(
-                          'bg-gradient-to-br from-indigo-500 to-violet-600 text-white',
+                          'bg-primary text-primary-foreground',
                           isSameAsPrev ? 'rounded-tr-2xl' : 'rounded-tr-sm',
                           isSameAsNext ? 'rounded-br-2xl' : 'rounded-br-2xl',
                         )
                       : cn(
-                          'bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-100 dark:border-zinc-700',
+                          'bg-card text-card-foreground border border-border',
                           isSameAsPrev ? 'rounded-tl-2xl' : 'rounded-tl-sm',
                         ),
-                    isFailed && 'ring-2 ring-red-400/60',
+                    isFailed && 'ring-2 ring-destructive/60',
                   )}
                 >
                   <p className="leading-relaxed whitespace-pre-wrap">{message.content}</p>
@@ -129,7 +135,7 @@ export function MessageList({ messages, onRetry, onDismiss }: MessageListProps) 
                     <span
                       className={cn(
                         'text-[9px] font-medium',
-                        isMe ? 'text-white/60' : 'text-zinc-400 dark:text-zinc-500',
+                        isMe ? 'text-primary-foreground/70' : 'text-muted-foreground',
                       )}
                     >
                       {format(new Date(message.createdAt), 'HH:mm')}
@@ -147,12 +153,12 @@ export function MessageList({ messages, onRetry, onDismiss }: MessageListProps) 
                     animate={{ opacity: 1, y: 0 }}
                     className="flex items-center gap-2 mt-1.5"
                   >
-                    <span className="text-[10px] text-red-400 font-medium">Failed to send</span>
+                    <span className="text-[10px] text-destructive font-medium">Failed to send</span>
                     {onRetry && (
                       <button
                         type="button"
                         onClick={() => onRetry(tempId)}
-                        className="flex items-center gap-1 text-[10px] text-indigo-400 hover:text-indigo-300 transition-colors font-medium"
+                        className="flex items-center gap-1 text-[10px] text-primary hover:text-primary/80 transition-colors font-medium"
                         aria-label="Retry sending message"
                       >
                         <RefreshCw className="h-3 w-3" />
@@ -163,7 +169,7 @@ export function MessageList({ messages, onRetry, onDismiss }: MessageListProps) 
                       <button
                         type="button"
                         onClick={() => onDismiss(tempId)}
-                        className="flex items-center gap-1 text-[10px] text-zinc-400 hover:text-zinc-300 transition-colors"
+                        className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground transition-colors"
                         aria-label="Dismiss failed message"
                       >
                         <X className="h-3 w-3" />

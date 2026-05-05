@@ -21,4 +21,9 @@ export const authService = {
   async logout(): Promise<void> {
     await apiClient.post('/auth/logout')
   },
+
+  async updateProfile(data: import('@chat/validation').UpdateUserInput): Promise<MeResponse> {
+    const response = await apiClient.put<MeResponse>('/auth/me', data)
+    return response.data
+  },
 }

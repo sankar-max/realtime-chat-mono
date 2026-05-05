@@ -5,4 +5,6 @@ export {
   type RegisterInput,
   refreshTokenSchema,
   registerSchema,
+  updateUserSchema,
+  type UpdateUserInput,
 } from '@chat/validation'

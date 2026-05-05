@@ -21,3 +21,11 @@ export const refreshTokenSchema = z.object({
 })
 
 export type RefreshTokenInput = z.infer<typeof refreshTokenSchema>
+
+export const updateUserSchema = z.object({
+  displayName: z.string().min(2).max(50).optional(),
+  avatarUrl: z.string().url('Must be a valid URL').optional(),
+  bio: z.string().max(160).optional(),
+})
+
+export type UpdateUserInput = z.infer<typeof updateUserSchema>

@@ -59,6 +59,27 @@ export class AuthRepository {
       .where(ne(users.id, excludeUserId))
   }
 
+  async updateUser(userId: string, data: { displayName?: string; avatarUrl?: string; bio?: string }) {
+    const [user] = await this.database
+      .update(users)
+      .set({
+        ...data,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, userId))
+      .returning()
+
+    if (!user) return undefined
+
+    return {
+      id: user.id,
+      email: user.email,
+      displayName: user.displayName,
+      avatarUrl: user.avatarUrl,
+      bio: user.bio,
+    }
+  }
+
   async findSessionByToken(refreshToken: string) {
     return this.database.query.sessions.findFirst({
       where: eq(sessions.refreshToken, refreshToken),

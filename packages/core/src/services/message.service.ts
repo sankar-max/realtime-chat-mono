@@ -32,7 +32,11 @@ export class MessageService {
 
   async getMessages(userId: string, roomId: string) {
     await this.roomService.assertRoomAccess(userId, roomId)
-    return this.messageRepository.getMessagesByRoom(roomId)
+    const messages = await this.messageRepository.getMessagesByRoom(roomId)
+    return messages.map(({ sender, ...m }) => ({
+      ...m,
+      senderName: sender?.displayName,
+    }))
   }
 
   async getMessagesPaginated(userId: string, roomId: string, cursor?: string, limit: number = 20) {
@@ -62,8 +66,13 @@ export class MessageService {
         })
       : null
 
+    const mappedMessages = messages.map(({ sender, ...m }) => ({
+      ...m,
+      senderName: sender?.displayName,
+    }))
+
     return {
-      messages,
+      messages: mappedMessages,
       nextCursor,
     }
   }

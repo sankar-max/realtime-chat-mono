@@ -37,6 +37,7 @@ export const ServerMessageSchema = z.discriminatedUnion('type', [
       id: z.string(),
       roomId: z.string(),
       senderId: z.string(),
+      senderName: z.string().nullable().optional(),
       content: z.string().nullable(),
       type: z.string(),
       replyToId: z.string().nullable().optional(),

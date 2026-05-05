@@ -56,7 +56,7 @@ export function MessageInput({ onSend, disabled, wsStatus }: MessageInputProps) 
   const isNearLimit = charsRemaining < 200
 
   return (
-    <div className="px-4 pb-4 pt-2 bg-white dark:bg-zinc-950 border-t dark:border-zinc-800/60">
+    <div className="px-4 pb-4 pt-2 bg-background border-t border-border">
       {/* WS disconnected banner */}
       {isDisconnected && (
         <div className="flex items-center gap-2 px-3 py-1.5 mb-2 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/60 text-amber-700 dark:text-amber-400 text-xs font-medium">
@@ -87,9 +87,9 @@ export function MessageInput({ onSend, disabled, wsStatus }: MessageInputProps) 
             aria-disabled={!!isEffectivelyDisabled}
             className={cn(
               'w-full resize-none rounded-2xl px-5 py-3.5 text-sm leading-relaxed',
-              'bg-zinc-100 dark:bg-zinc-900',
-              'border border-transparent focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20',
-              'transition-all duration-150 placeholder:text-zinc-400 dark:placeholder:text-zinc-600',
+              'bg-muted text-foreground',
+              'border border-transparent focus:outline-none focus:border-ring/50 focus:ring-2 focus:ring-ring/20',
+              'transition-all duration-150 placeholder:text-muted-foreground',
               'disabled:opacity-50 disabled:cursor-not-allowed',
               'min-h-[48px] max-h-[160px]',
             )}
@@ -98,7 +98,7 @@ export function MessageInput({ onSend, disabled, wsStatus }: MessageInputProps) 
             <span
               className={cn(
                 'absolute bottom-2.5 right-3 text-[10px] tabular-nums',
-                charsRemaining < 50 ? 'text-red-400' : 'text-zinc-400',
+                charsRemaining < 50 ? 'text-destructive' : 'text-muted-foreground',
               )}
             >
               {charsRemaining}
@@ -112,8 +112,8 @@ export function MessageInput({ onSend, disabled, wsStatus }: MessageInputProps) 
           aria-label="Send message"
           className={cn(
             'h-12 w-12 shrink-0 rounded-full flex items-center justify-center',
-            'bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/25',
-            'transition-all duration-150 active:scale-95 hover:shadow-indigo-500/40 hover:shadow-xl',
+            'bg-primary text-primary-foreground shadow-lg shadow-primary/25',
+            'transition-all duration-150 active:scale-95 hover:shadow-primary/40 hover:shadow-xl',
             'disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none disabled:scale-100',
           )}
         >

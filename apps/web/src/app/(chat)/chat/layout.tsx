@@ -18,14 +18,20 @@ export default function ChatMainLayout({ children }: { children: React.ReactNode
   return (
     <AuthGuard>
       <ChatLayout>
-        <div className="flex flex-1 overflow-hidden">
-          {/* Rooms Sidebar - Persistent */}
-          <div className="w-80 border-r bg-white dark:border-zinc-800 dark:bg-zinc-950">
+        <div className="flex flex-1 overflow-hidden relative">
+          {/* Rooms Sidebar - Hidden on mobile if a room is active */}
+          <div 
+            className={`w-full md:w-80 flex-shrink-0 border-r bg-background md:block ${roomId ? 'hidden' : 'block'}`}
+          >
             <RoomSidebar activeRoomId={roomId} onRoomSelect={handleRoomSelect} />
           </div>
 
-          {/* Main Chat Content Area */}
-          <div className="flex flex-1 overflow-hidden">{children}</div>
+          {/* Main Chat Content Area - Hidden on mobile if no room is active */}
+          <div 
+            className={`flex-1 overflow-hidden bg-background md:flex ${roomId ? 'flex' : 'hidden'}`}
+          >
+            {children}
+          </div>
         </div>
       </ChatLayout>
     </AuthGuard>

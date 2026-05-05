@@ -26,6 +26,13 @@ export class MessageRepository {
   async getMessagesByRoom(roomId: string) {
     return this.database.query.messages.findMany({
       where: (m, { eq, and }) => and(eq(m.roomId, roomId), eq(m.isDeletedForEveryone, false)),
+      with: {
+        sender: {
+          columns: {
+            displayName: true,
+          },
+        },
+      },
       orderBy: (m, { desc }) => desc(m.createdAt),
     })
   }
@@ -47,6 +54,14 @@ export class MessageRepository {
               )
             : undefined,
         ),
+
+      with: {
+        sender: {
+          columns: {
+            displayName: true,
+          },
+        },
+      },
 
       orderBy: (m, { desc }) => [desc(m.createdAt), desc(m.id)],
 

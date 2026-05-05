@@ -4,7 +4,7 @@ import { Hono } from 'hono'
 import { sendSuccess } from '../../lib/response'
 import { authMiddleware } from '../../middleware/auth.middleware'
 import { validate } from '../../middleware/validator.middleware'
-import { loginSchema, refreshTokenSchema, registerSchema } from './auth.schema'
+import { loginSchema, refreshTokenSchema, registerSchema, updateUserSchema } from './auth.schema'
 import { authService } from '@chat/core'
 
 export const authRouter = new Hono()
@@ -48,4 +48,16 @@ authRouter.get('/me', authMiddleware, async (c: Context) => {
   const userId = c.get('userId')
   const user = await authService.getMe(userId)
   return sendSuccess(c, user)
+})
+
+authRouter.put('/me', authMiddleware, async (c: Context) => {
+  const userId = c.get('userId')
+  const body = await c.req.json()
+  const parsed = updateUserSchema.safeParse(body)
+  if (!parsed.success) {
+    return c.json({ success: false, error: parsed.error }, 400)
+  }
+  const data = parsed.data
+  const user = await authService.updateMe(userId, data)
+  return sendSuccess(c, user, 'Profile updated successfully')
 })

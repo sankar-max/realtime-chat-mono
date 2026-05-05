@@ -102,6 +102,12 @@ export class AuthService {
     return this.authRepository.getAllUsers(excludeUserId)
   }
 
+  async updateMe(userId: string, data: { displayName?: string; avatarUrl?: string; bio?: string }) {
+    const user = await this.authRepository.updateUser(userId, data)
+    if (!user) throw new NotFoundError('User not found')
+    return user
+  }
+
   async verifySession(sessionId: string) {
     const session = await this.authRepository.findSessionById(sessionId)
     return session

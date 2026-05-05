@@ -11,6 +11,8 @@ export interface Room {
   lastMessageAt?: string | null
   avatar?: string
   unreadCount?: number
+  targetUserId?: string | null
+  targetUserName?: string | null
 }
 
 export interface Message {
@@ -29,5 +31,7 @@ export interface User {
   email: string
   displayName: string
   avatar?: string | null
+  avatarUrl?: string | null
+  bio?: string | null
   createdAt: string
 }

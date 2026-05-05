@@ -16,21 +16,21 @@ export function RoomPageClient({ roomId }: RoomPageClientProps) {
   const { rooms } = useRooms()
 
   const activeRoom = rooms.find((r) => r.id === roomId)
-  const roomName = activeRoom?.name || (activeRoom?.type === 'direct' ? 'Private Message' : 'Unnamed Group')
+  const roomName = activeRoom?.name || (activeRoom?.type === 'direct' ? (activeRoom.targetUserName || 'Private Message') : 'Unnamed Group')
 
   return (
-    <div className="flex flex-1 flex-col bg-zinc-50 dark:bg-zinc-950 min-h-0">
+    <div className="flex flex-1 flex-col bg-background min-h-0">
       <title>{`${roomName} | Realtime Chat`}</title>
 
       {/* Chat Header */}
-      <header className="flex h-16 shrink-0 items-center justify-between border-b bg-white px-6 dark:border-zinc-800/80 dark:bg-zinc-950">
+      <header className="flex h-16 shrink-0 items-center justify-between border-b border-border bg-background px-6">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-indigo-500/20">
-            {activeRoom?.name?.[0]?.toUpperCase() || 'C'}
+          <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm shadow-sm">
+            {roomName?.[0]?.toUpperCase() || 'C'}
           </div>
           <div>
-            <h2 className="font-semibold text-zinc-900 dark:text-zinc-100">
-              {activeRoom?.name || (activeRoom?.type === 'direct' ? 'Private Message' : 'Unnamed Group')}
+            <h2 className="font-semibold text-foreground">
+              {roomName}
             </h2>
             <p
               className={cn(

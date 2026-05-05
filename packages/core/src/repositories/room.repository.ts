@@ -1,4 +1,4 @@
-import { messages, roomMembers, rooms } from '@chat/schema'
+import { messages, roomMembers, rooms, users } from '@chat/schema'
 import { createId } from '@chat/utils'
 import { desc, eq, sql } from 'drizzle-orm'
 import type { db } from '@chat/db'
@@ -21,6 +21,8 @@ export class RoomRepository {
           string | null
         >`(SELECT content FROM ${messages} WHERE ${messages.roomId} = ${rooms.id} ORDER BY ${messages.createdAt} DESC LIMIT 1)`,
         lastMessageAt: sql<Date | null>`(SELECT created_at FROM ${messages} WHERE ${messages.roomId} = ${rooms.id} ORDER BY ${messages.createdAt} DESC LIMIT 1)`,
+        targetUserId: sql<string | null>`(SELECT ${roomMembers.userId} FROM ${roomMembers} WHERE ${roomMembers.roomId} = ${rooms.id} AND ${roomMembers.userId} != ${userId} LIMIT 1)`,
+        targetUserName: sql<string | null>`(SELECT ${users.displayName} FROM ${users} JOIN ${roomMembers} ON ${users.id} = ${roomMembers.userId} WHERE ${roomMembers.roomId} = ${rooms.id} AND ${roomMembers.userId} != ${userId} LIMIT 1)`,
       })
       .from(rooms)
       .innerJoin(roomMembers, eq(rooms.id, roomMembers.roomId))
@@ -104,12 +106,18 @@ export class RoomRepository {
         })
         .returning()
 
-      const membersToInsert = [
+      const membersToInsert: Array<{
+        id: string
+        userId: string
+        roomId: string
+        role: 'admin' | 'member'
+        joinedAt: Date
+      }> = [
         {
           id: createId(),
           userId,
           roomId: room.id,
-          role: 'admin' as const,
+          role: 'admin',
           joinedAt: new Date(),
         },
       ]

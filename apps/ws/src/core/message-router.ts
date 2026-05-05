@@ -1,4 +1,4 @@
-import { messageService } from '@chat/core'
+import { messageService, authService } from '@chat/core'
 import type { ClientMessage, ServerMessage } from '@chat/ws-types'
 import { ClientMessageSchema } from '@chat/ws-types'
 import { connectionManager } from '../connection-manager'
@@ -50,6 +50,8 @@ export class MessageRouter {
         replyToId,
       })
 
+      const sender = await authService.getMe(userId).catch(() => null)
+
       // ── 3. Get all room member IDs ───────────────────────────────────────
       const memberIds = await getRoomMemberIds(roomId)
 
@@ -60,6 +62,7 @@ export class MessageRouter {
           id: message.id,
           roomId: message.roomId,
           senderId: message.senderId,
+          senderName: sender?.displayName || undefined,
           content: message.content,
           type: message.type,
           replyToId: message.replyToId,
