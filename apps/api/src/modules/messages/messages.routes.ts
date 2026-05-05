@@ -4,7 +4,7 @@ import { sendSuccess } from '../../lib/response'
 import { authMiddleware } from '../../middleware/auth.middleware'
 import { validate } from '../../middleware/validator.middleware'
 import type { AppVariables } from '../../types/context'
-import { messagesService } from './messages.service'
+import { messageService as messagesService } from '@chat/core'
 
 export const messagesRouter = new Hono<{ Variables: AppVariables }>()
 

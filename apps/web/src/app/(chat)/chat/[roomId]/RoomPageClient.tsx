@@ -4,41 +4,78 @@ import { MessageInput } from '@/features/chat/components/MessageInput'
 import { MessageList } from '@/features/chat/components/MessageList'
 import { useMessages } from '@/features/chat/hooks/useMessages'
 import { useRooms } from '@/features/rooms/hooks/useRooms'
+import { Wifi, WifiOff, Loader2 } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface RoomPageClientProps {
   roomId: string
 }
 
 export function RoomPageClient({ roomId }: RoomPageClientProps) {
-  const { messages, sendMessage } = useMessages(roomId)
+  const { messages, isLoading, wsStatus, sendMessage, retryFailed, dismissFailed } = useMessages(roomId)
   const { rooms } = useRooms()
 
   const activeRoom = rooms.find((r) => r.id === roomId)
   const roomName = activeRoom?.name || (activeRoom?.type === 'direct' ? 'Private Message' : 'Unnamed Group')
 
   return (
-    <div className="flex flex-1 flex-col bg-zinc-50 dark:bg-black">
-      {/* Client-side dynamic title fallback */}
+    <div className="flex flex-1 flex-col bg-zinc-50 dark:bg-zinc-950 min-h-0">
       <title>{`${roomName} | Realtime Chat`}</title>
 
       {/* Chat Header */}
-      <header className="flex h-16 items-center justify-between border-b bg-white px-6 dark:border-zinc-800 dark:bg-zinc-950">
+      <header className="flex h-16 shrink-0 items-center justify-between border-b bg-white px-6 dark:border-zinc-800/80 dark:bg-zinc-950">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
+          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-indigo-500/20">
             {activeRoom?.name?.[0]?.toUpperCase() || 'C'}
           </div>
           <div>
-            <h2 className="font-semibold">
+            <h2 className="font-semibold text-zinc-900 dark:text-zinc-100">
               {activeRoom?.name || (activeRoom?.type === 'direct' ? 'Private Message' : 'Unnamed Group')}
             </h2>
-            <p className="text-[10px] text-green-500 font-medium uppercase tracking-wider">Online</p>
+            <p
+              className={cn(
+                'text-[10px] font-semibold uppercase tracking-wider',
+                wsStatus === 'connected'
+                  ? 'text-emerald-500'
+                  : wsStatus === 'connecting'
+                    ? 'text-amber-400'
+                    : 'text-red-400',
+              )}
+            >
+              {wsStatus === 'connected' ? '● Online' : wsStatus === 'connecting' ? '○ Connecting…' : '○ Offline'}
+            </p>
           </div>
+        </div>
+
+        {/* WS status indicator */}
+        <div className="flex items-center gap-2">
+          {wsStatus === 'connected' ? (
+            <Wifi className="h-4 w-4 text-emerald-500" />
+          ) : wsStatus === 'connecting' ? (
+            <Loader2 className="h-4 w-4 text-amber-400 animate-spin" />
+          ) : (
+            <WifiOff className="h-4 w-4 text-red-400" />
+          )}
         </div>
       </header>
 
-      <MessageList messages={messages} />
+      {/* Message list */}
+      {isLoading ? (
+        <div className="flex flex-1 items-center justify-center">
+          <Loader2 className="h-6 w-6 animate-spin text-indigo-500" />
+        </div>
+      ) : (
+        <MessageList
+          messages={messages}
+          onRetry={retryFailed}
+          onDismiss={dismissFailed}
+        />
+      )}
 
-      <MessageInput onSend={(content) => sendMessage({ roomId, content })} />
+      <MessageInput
+        onSend={sendMessage}
+        wsStatus={wsStatus}
+      />
     </div>
   )
 }

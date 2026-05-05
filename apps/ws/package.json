@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@chat/config": "workspace:*",
+    "@chat/core": "workspace:*",
     "@chat/db": "workspace:*",
     "@chat/events": "workspace:*",
     "@chat/ws-types": "workspace:*",

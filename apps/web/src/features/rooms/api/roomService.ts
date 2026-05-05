@@ -7,8 +7,8 @@ export const roomService = {
     return response.data.data
   },
 
-  async createRoom(name: string): Promise<Room> {
-    const response = await apiClient.post('/rooms/create', { name })
+  async createRoom(name: string, type: 'direct' | 'group' = 'group', memberIds?: string[]): Promise<Room> {
+    const response = await apiClient.post('/rooms/create', { name, type, memberIds })
     return response.data.data
   },
 

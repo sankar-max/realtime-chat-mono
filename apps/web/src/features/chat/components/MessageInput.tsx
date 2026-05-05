@@ -1,47 +1,124 @@
 'use client'
 
-import { SendIcon } from 'lucide-react'
+import { SendIcon, WifiOff } from 'lucide-react'
 import type React from 'react'
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { useCallback, useRef, useState } from 'react'
+import type { WsStatus } from '@/lib/ws-client'
+import { cn } from '@/lib/utils'
+
+const MAX_CHARS = 4000
 
 interface MessageInputProps {
   onSend: (content: string) => void
   disabled?: boolean
+  wsStatus?: WsStatus
 }
 
-export function MessageInput({ onSend, disabled }: MessageInputProps) {
+export function MessageInput({ onSend, disabled, wsStatus }: MessageInputProps) {
   const [content, setContent] = useState('')
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (content.trim()) {
-      onSend(content)
-      setContent('')
+  const isDisconnected = wsStatus && wsStatus !== 'connected'
+  const isEffectivelyDisabled = disabled || isDisconnected
+
+  const resizeTextarea = useCallback(() => {
+    const ta = textareaRef.current
+    if (!ta) return
+    ta.style.height = 'auto'
+    ta.style.height = `${Math.min(ta.scrollHeight, 160)}px`
+  }, [])
+
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (e.target.value.length > MAX_CHARS) return
+    setContent(e.target.value)
+    resizeTextarea()
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSubmit()
     }
   }
 
+  const handleSubmit = () => {
+    const trimmed = content.trim()
+    if (!trimmed || isEffectivelyDisabled) return
+    onSend(trimmed)
+    setContent('')
+    // Reset height
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto'
+    }
+  }
+
+  const charsRemaining = MAX_CHARS - content.length
+  const isNearLimit = charsRemaining < 200
+
   return (
-    <div className="p-4 bg-white dark:bg-zinc-950 border-t dark:border-zinc-800">
-      <form onSubmit={handleSubmit} className="flex gap-2 max-w-4xl mx-auto" aria-label="Send message">
-        <Input
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Type a message..."
-          disabled={disabled}
-          aria-label="Message content"
-          className="flex-1 rounded-full px-6 h-12 bg-zinc-100 dark:bg-zinc-900 border-none focus-visible:ring-primary"
-        />
-        <Button
+    <div className="px-4 pb-4 pt-2 bg-white dark:bg-zinc-950 border-t dark:border-zinc-800/60">
+      {/* WS disconnected banner */}
+      {isDisconnected && (
+        <div className="flex items-center gap-2 px-3 py-1.5 mb-2 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/60 text-amber-700 dark:text-amber-400 text-xs font-medium">
+          <WifiOff className="h-3.5 w-3.5 shrink-0" />
+          {wsStatus === 'connecting' ? 'Connecting to chat server…' : 'Disconnected. Messages are paused.'}
+        </div>
+      )}
+
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          handleSubmit()
+        }}
+        className="flex items-end gap-2 max-w-4xl mx-auto"
+        aria-label="Send message"
+      >
+        <div className="relative flex-1">
+          <textarea
+            ref={textareaRef}
+            id="message-input"
+            value={content}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
+            placeholder={isDisconnected ? 'Reconnecting…' : 'Message… (Enter to send, Shift+Enter for newline)'}
+            disabled={!!isEffectivelyDisabled}
+            rows={1}
+            aria-label="Message content"
+            aria-disabled={!!isEffectivelyDisabled}
+            className={cn(
+              'w-full resize-none rounded-2xl px-5 py-3.5 text-sm leading-relaxed',
+              'bg-zinc-100 dark:bg-zinc-900',
+              'border border-transparent focus:outline-none focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20',
+              'transition-all duration-150 placeholder:text-zinc-400 dark:placeholder:text-zinc-600',
+              'disabled:opacity-50 disabled:cursor-not-allowed',
+              'min-h-[48px] max-h-[160px]',
+            )}
+          />
+          {isNearLimit && content.length > 0 && (
+            <span
+              className={cn(
+                'absolute bottom-2.5 right-3 text-[10px] tabular-nums',
+                charsRemaining < 50 ? 'text-red-400' : 'text-zinc-400',
+              )}
+            >
+              {charsRemaining}
+            </span>
+          )}
+        </div>
+
+        <button
           type="submit"
-          size="icon"
-          disabled={!content.trim() || disabled}
-          aria-label="Send message button"
-          className="h-12 w-12 rounded-full shadow-lg shadow-primary/20 transition-transform active:scale-95"
+          disabled={!content.trim() || !!isEffectivelyDisabled}
+          aria-label="Send message"
+          className={cn(
+            'h-12 w-12 shrink-0 rounded-full flex items-center justify-center',
+            'bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-lg shadow-indigo-500/25',
+            'transition-all duration-150 active:scale-95 hover:shadow-indigo-500/40 hover:shadow-xl',
+            'disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none disabled:scale-100',
+          )}
         >
           <SendIcon className="h-5 w-5" />
-        </Button>
+        </button>
       </form>
     </div>
   )

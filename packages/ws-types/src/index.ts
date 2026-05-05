@@ -60,6 +60,21 @@ export const ServerMessageSchema = z.discriminatedUnion('type', [
       message: z.string(),
     }),
   }),
+
+  z.object({
+    type: z.literal('PRESENCE_UPDATE'),
+    payload: z.object({
+      userId: z.string(),
+      status: z.enum(['online', 'offline']),
+    }),
+  }),
+
+  z.object({
+    type: z.literal('ONLINE_USERS_LIST'),
+    payload: z.object({
+      userIds: z.array(z.string()),
+    }),
+  }),
 ])
 
 export type ServerMessage = z.infer<typeof ServerMessageSchema>

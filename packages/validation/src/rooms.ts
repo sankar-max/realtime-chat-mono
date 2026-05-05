@@ -28,6 +28,7 @@ export type InsertRoom = z.infer<typeof dbRoomInsertSchema>
 export const createRoomSchema = z.object({
   name: z.string().trim().min(1, 'Room name is required').max(100, 'Room name must be less than 100 characters'),
   type: roomTypeEnum,
+  memberIds: z.array(z.string()).optional(),
 })
 
 export type CreateRoomInput = z.infer<typeof createRoomSchema>

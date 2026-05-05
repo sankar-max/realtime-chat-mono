@@ -48,6 +48,9 @@ importers:
       '@chat/config':
         specifier: workspace:*
         version: link:../../packages/config
+      '@chat/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       '@chat/db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -121,9 +124,15 @@ importers:
       '@chat/validation':
         specifier: workspace:*
         version: link:../../packages/validation
+      '@chat/ws-types':
+        specifier: workspace:*
+        version: link:../../packages/ws-types
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.73.1(react@19.2.4))
+      '@reduxjs/toolkit':
+        specifier: ^2.11.2
+        version: 2.11.2(react-redux@9.2.0(@types/react@19.2.14)(react@19.2.4)(redux@5.0.1))(react@19.2.4)
       '@tanstack/react-query':
         specifier: ^5.99.2
         version: 5.99.2(react@19.2.4)
@@ -157,6 +166,9 @@ importers:
       lucide-react:
         specifier: ^1.8.0
         version: 1.8.0(react@19.2.4)
+      nanoid:
+        specifier: ^5.1.7
+        version: 5.1.7
       next:
         specifier: 16.2.4
         version: 16.2.4(@babel/core@7.29.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -178,6 +190,9 @@ importers:
       react-hook-form:
         specifier: ^7.73.1
         version: 7.73.1(react@19.2.4)
+      react-redux:
+        specifier: ^9.2.0
+        version: 9.2.0(@types/react@19.2.14)(react@19.2.4)(redux@5.0.1)
       react-resizable-panels:
         specifier: ^4.10.0
         version: 4.10.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -236,6 +251,9 @@ importers:
       '@chat/config':
         specifier: workspace:*
         version: link:../../packages/config
+      '@chat/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       '@chat/db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -286,6 +304,46 @@ importers:
       '@types/node':
         specifier: ^25.4.0
         version: 25.5.0
+
+  packages/core:
+    dependencies:
+      '@chat/config':
+        specifier: workspace:*
+        version: link:../config
+      '@chat/db':
+        specifier: workspace:*
+        version: link:../db
+      '@chat/schema':
+        specifier: workspace:*
+        version: link:../schema
+      '@chat/utils':
+        specifier: workspace:*
+        version: link:../utils
+      '@chat/validation':
+        specifier: workspace:*
+        version: link:../validation
+      bcryptjs:
+        specifier: ^3.0.3
+        version: 3.0.3
+      date-fns:
+        specifier: ^4.1.0
+        version: 4.1.0
+      drizzle-orm:
+        specifier: ^0.45.1
+        version: 0.45.1(@neondatabase/serverless@1.0.2)(@types/pg@8.20.0)(postgres@3.4.8)
+      jsonwebtoken:
+        specifier: ^9.0.3
+        version: 9.0.3
+    devDependencies:
+      '@types/bcryptjs':
+        specifier: ^2.4.6
+        version: 2.4.6
+      '@types/jsonwebtoken':
+        specifier: ^9.0.10
+        version: 9.0.10
+      typescript:
+        specifier: ^5.9.0
+        version: 5.9.3
 
   packages/db:
     dependencies:
@@ -2378,6 +2436,9 @@ packages:
     resolution: {integrity: sha512-voicVULvUV5yaGXo0Iue13BcHGYW3u0VgqSbfQwBaHbpj1zLjYV4KIe+7fYIo6DO8FVUJzxFps3ODCQG/Wy2Qw==}
     cpu: [arm64]
     os: [win32]
+
+  '@types/bcryptjs@2.4.6':
+    resolution: {integrity: sha512-9xlo6R2qDs5uixm0bcIqCeMCE6HiQsIyel9KQySStiyqNl2tnj2mP3DX1Nf56MD6KMenNNlBBsy3LJ7gUEQPXQ==}
 
   '@types/d3-array@3.2.2':
     resolution: {integrity: sha512-hOLWVbm7uRza0BYXpIIW5pxfrKe0W+D5lrFiAEYR+pb6w3N2SwSMaJbXdUfSEv+dT4MfHBLtn5js0LAWaO6otw==}
@@ -6135,6 +6196,8 @@ snapshots:
 
   '@turbo/windows-arm64@2.8.20':
     optional: true
+
+  '@types/bcryptjs@2.4.6': {}
 
   '@types/d3-array@3.2.2': {}
 

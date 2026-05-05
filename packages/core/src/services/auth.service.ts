@@ -1,11 +1,14 @@
 import { createId, generateAccessToken } from '@chat/utils'
 import bcrypt from 'bcryptjs'
 import { createHash } from 'crypto'
-import { AuthError, ConflictError, NotFoundError } from '../../lib/errors'
-import { authRepository } from './auth.repository'
-export const authService = {
+import { AuthError, ConflictError, NotFoundError } from '../errors'
+import type { AuthRepository } from '../repositories/auth.repository'
+
+export class AuthService {
+  constructor(private readonly authRepository: AuthRepository) {}
+
   async register(data: { email: string; password: string; displayName: string }) {
-    const existingUser = await authRepository.findUserByEmail(data.email)
+    const existingUser = await this.authRepository.findUserByEmail(data.email)
 
     if (existingUser) {
       throw new ConflictError('User already exists')
@@ -13,7 +16,7 @@ export const authService = {
 
     const passwordHash = await bcrypt.hash(data.password, 10)
 
-    const user = await authRepository.createUser({
+    const user = await this.authRepository.createUser({
       email: data.email,
       passwordHash,
       displayName: data.displayName,
@@ -22,13 +25,13 @@ export const authService = {
     const { passwordHash: userPassword, ...rest } = user
 
     return rest
-  },
+  }
 
   async login(
     data: { email: string; password: string },
     deviceInfo?: { deviceIp?: string; deviceName?: string; userAgent?: string },
   ) {
-    const user = await authRepository.findUserByEmail(data.email)
+    const user = await this.authRepository.findUserByEmail(data.email)
 
     if (!user) {
       throw new AuthError('Invalid credentials')
@@ -44,7 +47,7 @@ export const authService = {
     const refreshToken = createId()
     const hashedToken = createHash('sha256').update(refreshToken).digest('hex')
 
-    const session = await authRepository.createSession({
+    const session = await this.authRepository.createSession({
       userId: user.id,
       refreshToken: hashedToken,
       ...deviceInfo,
@@ -55,16 +58,17 @@ export const authService = {
     return {
       user: safeUser,
       accessToken,
-      refreshToken: refreshToken, // Fixed: return raw token
+      refreshToken: refreshToken,
     }
-  },
+  }
+
   async refresh(refreshToken: string) {
     if (!refreshToken) {
       throw new AuthError('Refresh token required')
     }
 
     const hashedToken = createHash('sha256').update(refreshToken).digest('hex')
-    const session = await authRepository.findSessionByToken(hashedToken)
+    const session = await this.authRepository.findSessionByToken(hashedToken)
 
     if (!session) {
       throw new AuthError('Invalid session')
@@ -81,14 +85,25 @@ export const authService = {
     const accessToken = generateAccessToken(session.userId, session.id)
 
     return { accessToken }
-  },
+  }
+
   async logout(sessionId: string) {
-    await authRepository.revokeSession(sessionId)
-  },
+    await this.authRepository.revokeSession(sessionId)
+  }
+
   async getMe(userId: string) {
-    const user = await authRepository.findUserById(userId)
+    const user = await this.authRepository.findUserById(userId)
     if (!user) throw new NotFoundError('User not found')
     const { passwordHash: userPassword, ...rest } = user
     return rest
-  },
+  }
+
+  async getAllUsers(excludeUserId: string) {
+    return this.authRepository.getAllUsers(excludeUserId)
+  }
+
+  async verifySession(sessionId: string) {
+    const session = await this.authRepository.findSessionById(sessionId)
+    return session
+  }
 }

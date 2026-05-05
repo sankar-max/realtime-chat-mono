@@ -1,12 +1,14 @@
-import { db } from '@chat/db'
 import { messages, roomMembers, rooms } from '@chat/schema'
 import { createId } from '@chat/utils'
 import { desc, eq, sql } from 'drizzle-orm'
-import type { CreateRoomInput } from './rooms.schema'
+import type { db } from '@chat/db'
+import type { CreateRoomInput } from '@chat/validation'
 
-export const roomsRepository = {
+export class RoomRepository {
+  constructor(private readonly database: typeof db) {}
+
   async getUserRooms(userId: string) {
-    return db
+    return this.database
       .select({
         id: rooms.id,
         name: rooms.name,
@@ -24,23 +26,25 @@ export const roomsRepository = {
       .innerJoin(roomMembers, eq(rooms.id, roomMembers.roomId))
       .where(eq(roomMembers.userId, userId))
       .orderBy(desc(rooms.updatedAt))
-  },
+  }
+
   async isUserInRoom(userId: string, roomId: string) {
-    const member = await db.query.roomMembers.findFirst({
+    const member = await this.database.query.roomMembers.findFirst({
       where: (rm, { eq, and }) => and(eq(rm.userId, userId), eq(rm.roomId, roomId)),
     })
 
     return !!member
-  },
+  }
+
   async getOrCreateDMRoom(userId: string, targetUserId: string, dmKey: string) {
-    const existingRoom = await db.query.rooms.findFirst({
+    const existingRoom = await this.database.query.rooms.findFirst({
       where: eq(rooms.dmKey, dmKey),
     })
 
     if (existingRoom) return existingRoom
 
     try {
-      return await db.transaction(async (tx) => {
+      return await this.database.transaction(async (tx) => {
         const roomId = createId()
 
         const [room] = await tx
@@ -74,7 +78,7 @@ export const roomsRepository = {
         return room
       })
     } catch (err) {
-      const room = await db.query.rooms.findFirst({
+      const room = await this.database.query.rooms.findFirst({
         where: eq(rooms.dmKey, dmKey),
       })
 
@@ -84,10 +88,10 @@ export const roomsRepository = {
 
       return room
     }
-  },
+  }
 
   async createRoom(userId: string, data: CreateRoomInput) {
-    return await db.transaction(async (tx) => {
+    return await this.database.transaction(async (tx) => {
       const roomId = createId()
 
       const [room] = await tx
@@ -100,15 +104,42 @@ export const roomsRepository = {
         })
         .returning()
 
-      await tx.insert(roomMembers).values({
-        id: createId(),
-        userId,
-        roomId: room.id,
-        role: 'admin',
-        joinedAt: new Date(),
-      })
+      const membersToInsert = [
+        {
+          id: createId(),
+          userId,
+          roomId: room.id,
+          role: 'admin' as const,
+          joinedAt: new Date(),
+        },
+      ]
+
+      if (data.memberIds && data.memberIds.length > 0) {
+        // Exclude the creator if they were accidentally included in the list
+        const uniqueOtherMembers = Array.from(new Set(data.memberIds)).filter(id => id !== userId)
+        
+        for (const memberId of uniqueOtherMembers) {
+          membersToInsert.push({
+            id: createId(),
+            userId: memberId,
+            roomId: room.id,
+            role: 'member' as const,
+            joinedAt: new Date(),
+          })
+        }
+      }
+
+      await tx.insert(roomMembers).values(membersToInsert)
 
       return room
     })
-  },
+  }
+
+  async getRoomMemberIds(roomId: string): Promise<string[]> {
+    const members = await this.database.query.roomMembers.findMany({
+      where: (rm, { eq }) => eq(rm.roomId, roomId),
+      columns: { userId: true },
+    })
+    return members.map((m) => m.userId)
+  }
 }

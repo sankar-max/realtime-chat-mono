@@ -1,9 +1,7 @@
-import type { ContentfulStatusCode } from 'hono/utils/http-status'
-
 export class AppError extends Error {
   constructor(
     public readonly message: string,
-    public readonly statusCode: ContentfulStatusCode = 500,
+    public readonly statusCode: number = 500,
     public readonly code?: string,
   ) {
     super(message)
@@ -50,6 +48,7 @@ export class BadRequestError extends AppError {
     super(message, 400, 'BAD_REQUEST_ERROR')
   }
 }
+
 export class InvalidCursorError extends AppError {
   constructor(message: string = 'Invalid cursor') {
     super(message, 400, 'INVALID_CURSOR_ERROR')

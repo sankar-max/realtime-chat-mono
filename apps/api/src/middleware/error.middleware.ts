@@ -1,15 +1,16 @@
 import { env } from '@chat/config'
 import type { Context } from 'hono'
 import { ZodError } from 'zod'
-import { AppError } from '../lib/errors'
+import { AppError } from '@chat/core'
 import { sendError } from '../lib/response'
+import type { ContentfulStatusCode } from 'hono/utils/http-status'
 
 export async function errorHandler(error: Error, c: Context) {
   const requestId = c.get('requestId') || 'no-id'
   console.error(`[ERROR][${requestId}] ${c.req.method} ${c.req.url}:`, error)
 
   if (error instanceof AppError) {
-    return sendError(c, error.message, error.code, error.statusCode)
+    return sendError(c, error.message, error.code, error.statusCode as ContentfulStatusCode)
   }
 
   if (error instanceof ZodError) {

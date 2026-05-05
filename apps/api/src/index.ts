@@ -9,6 +9,7 @@ import { requestIdMiddleware } from './middleware/requestId.middleware'
 import { authRouter } from './modules/auth/auth.routes'
 import { messagesRouter } from './modules/messages/messages.routes'
 import { roomsRouter } from './modules/rooms/rooms.routes'
+import { usersRouter } from './modules/users/users.routes'
 import type { AppVariables } from './types/context'
 
 const app = new Hono<{
@@ -29,6 +30,7 @@ app.get('/', (c) => c.text('Hono based API is running'))
 app.route('/auth', authRouter)
 app.route('/rooms', roomsRouter)
 app.route('/messages', messagesRouter)
+app.route('/users', usersRouter)
 app.onError(errorHandler)
 
 serve({

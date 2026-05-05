@@ -5,7 +5,7 @@ import { sendSuccess } from '../../lib/response'
 import { authMiddleware } from '../../middleware/auth.middleware'
 import { validate } from '../../middleware/validator.middleware'
 import { loginSchema, refreshTokenSchema, registerSchema } from './auth.schema'
-import { authService } from './auth.service'
+import { authService } from '@chat/core'
 
 export const authRouter = new Hono()
 

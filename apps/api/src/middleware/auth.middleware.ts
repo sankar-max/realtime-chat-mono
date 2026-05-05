@@ -1,7 +1,7 @@
 import { type AccessTokenPayload, verifyAccessToken } from '@chat/utils'
 import type { Context, Next } from 'hono'
-import { AuthError } from '../lib/errors'
-import { authRepository } from '../modules/auth/auth.repository'
+import { AuthError } from '@chat/core'
+import { authService } from '@chat/core'
 
 export async function authMiddleware(c: Context, next: Next) {
   const authHeader = c.req.header('Authorization')
@@ -26,7 +26,7 @@ export async function authMiddleware(c: Context, next: Next) {
   c.set('userId', payload.sub)
   c.set('sessionId', payload.sid)
 
-  const session = await authRepository.findSessionById(payload.sid)
+  const session = await authService.verifySession(payload.sid)
   if (!session) {
     throw new AuthError('Invalid session')
   }

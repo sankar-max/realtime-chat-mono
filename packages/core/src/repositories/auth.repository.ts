@@ -1,12 +1,14 @@
-import { db } from '@chat/db'
 import { sessions, users } from '@chat/schema'
 import { createId } from '@chat/utils'
 import { addDays } from 'date-fns'
-import { eq } from 'drizzle-orm'
+import { eq, ne } from 'drizzle-orm'
+import type { db } from '@chat/db'
 
-export const authRepository = {
+export class AuthRepository {
+  constructor(private readonly database: typeof db) {}
+
   async createUser(data: { email: string; passwordHash: string; displayName: string }) {
-    const [user] = await db
+    const [user] = await this.database
       .insert(users)
       .values({
         id: createId(),
@@ -17,10 +19,10 @@ export const authRepository = {
       .returning()
 
     return user
-  },
+  }
 
   async findUserByEmail(email: string) {
-    const [user] = await db
+    const [user] = await this.database
       .select({
         email: users.email,
         displayName: users.displayName,
@@ -31,9 +33,10 @@ export const authRepository = {
       .where(eq(users.email, email))
 
     return user ?? null
-  },
+  }
+
   async findUserById(userId: string) {
-    const [user] = await db
+    const [user] = await this.database
       .select({
         id: users.id,
         email: users.email,
@@ -43,20 +46,34 @@ export const authRepository = {
       .from(users)
       .where(eq(users.id, userId))
     return user ?? null
-  },
+  }
+
+  async getAllUsers(excludeUserId: string) {
+    return this.database
+      .select({
+        id: users.id,
+        email: users.email,
+        displayName: users.displayName,
+      })
+      .from(users)
+      .where(ne(users.id, excludeUserId))
+  }
+
   async findSessionByToken(refreshToken: string) {
-    return db.query.sessions.findFirst({
+    return this.database.query.sessions.findFirst({
       where: eq(sessions.refreshToken, refreshToken),
     })
-  },
+  }
+
   async findSessionById(sessionId: string) {
-    return db.query.sessions.findFirst({
+    return this.database.query.sessions.findFirst({
       where: eq(sessions.id, sessionId),
     })
-  },
+  }
+
   async revokeSession(sessionId: string) {
-    await db.update(sessions).set({ revokedAt: new Date() }).where(eq(sessions.id, sessionId))
-  },
+    await this.database.update(sessions).set({ revokedAt: new Date() }).where(eq(sessions.id, sessionId))
+  }
 
   async createSession(data: {
     userId: string
@@ -65,7 +82,7 @@ export const authRepository = {
     deviceName?: string
     userAgent?: string
   }) {
-    const [session] = await db
+    const [session] = await this.database
       .insert(sessions)
       .values({
         id: createId(),
@@ -79,5 +96,5 @@ export const authRepository = {
       .returning()
 
     return session
-  },
+  }
 }

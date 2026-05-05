@@ -61,6 +61,21 @@ class ConnectionManager {
   getConnections(userId: string) {
     return this.connections.get(userId)
   }
+
+  getOnlineUsers(): string[] {
+    return Array.from(this.connections.keys())
+  }
+
+  broadcast(message: ServerMessage) {
+    const serialized = JSON.stringify(message)
+    for (const [userId, userConnections] of this.connections.entries()) {
+      for (const ws of userConnections) {
+        if (ws.readyState === ws.OPEN) {
+          ws.send(serialized)
+        }
+      }
+    }
+  }
 }
 
 export const connectionManager = new ConnectionManager()

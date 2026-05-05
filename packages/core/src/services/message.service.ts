@@ -1,41 +1,46 @@
 import type { SendMessageInput } from '@chat/validation'
-import { ConflictError } from '../../lib/errors'
-import { roomsService } from '../rooms/rooms.service'
-import { decodeCursor, encodeCursor } from './messages.cursor'
-import { messagesRepository } from './messages.repository'
+import { ConflictError } from '../errors'
+import { decodeCursor, encodeCursor } from '../utils/cursor'
+import type { MessageRepository } from '../repositories/message.repository'
+import type { RoomService } from './room.service'
 
-export const messagesService = {
+export class MessageService {
+  constructor(
+    private readonly messageRepository: MessageRepository,
+    private readonly roomService: RoomService,
+  ) {}
+
   async sendMessage(userId: string, input: SendMessageInput) {
-    await roomsService.assertRoomAccess(userId, input.roomId)
+    await this.roomService.assertRoomAccess(userId, input.roomId)
 
     if (input.replyToId) {
-      const replyMsg = await messagesRepository.getMessageById(input.replyToId)
+      const replyMsg = await this.messageRepository.getMessageById(input.replyToId)
 
       if (!replyMsg || replyMsg.roomId !== input.roomId) {
         throw new ConflictError('Invalid reply message')
       }
     }
 
-    const message = await messagesRepository.createMessage({
+    const message = await this.messageRepository.createMessage({
       roomId: input.roomId,
       senderId: userId,
       content: input.content,
       replyToId: input.replyToId,
     })
     return message
-  },
+  }
 
   async getMessages(userId: string, roomId: string) {
-    await roomsService.assertRoomAccess(userId, roomId)
-    return messagesRepository.getMessagesByRoom(roomId)
-  },
+    await this.roomService.assertRoomAccess(userId, roomId)
+    return this.messageRepository.getMessagesByRoom(roomId)
+  }
 
   async getMessagesPaginated(userId: string, roomId: string, cursor?: string, limit: number = 20) {
-    await roomsService.assertRoomAccess(userId, roomId)
+    await this.roomService.assertRoomAccess(userId, roomId)
 
     const decodedCursor = cursor ? decodeCursor(cursor) : undefined
 
-    const messages = await messagesRepository.getMessagesByRoomPaginated({
+    const messages = await this.messageRepository.getMessagesByRoomPaginated({
       roomId,
       cursor: decodedCursor,
       limit,
@@ -61,10 +66,10 @@ export const messagesService = {
       messages,
       nextCursor,
     }
-  },
+  }
 
   async getRoomReceipts(userId: string, roomId: string) {
-    await roomsService.assertRoomAccess(userId, roomId)
-    return messagesRepository.getRoomReceipts(roomId)
-  },
+    await this.roomService.assertRoomAccess(userId, roomId)
+    return this.messageRepository.getRoomReceipts(roomId)
+  }
 }

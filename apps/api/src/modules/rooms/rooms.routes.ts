@@ -5,7 +5,7 @@ import { authMiddleware } from '../../middleware/auth.middleware'
 import { validate } from '../../middleware/validator.middleware'
 import type { AppVariables } from '../../types/context'
 import { createRoomSchema } from './rooms.schema'
-import { roomsService } from './rooms.service'
+import { roomService as roomsService } from '@chat/core'
 
 export const roomsRouter = new Hono<{ Variables: AppVariables }>()
 

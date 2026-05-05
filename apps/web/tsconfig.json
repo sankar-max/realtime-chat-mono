@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -19,13 +23,36 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@chat/validation": ["../../packages/validation/src"],
-      "@chat/types": ["../../packages/types/src"],
-      "@chat/schema": ["../../packages/schema/src"],
-      "@chat/utils": ["../../packages/utils/src"]
+      "@/*": [
+        "./src/*"
+      ],
+      "@chat/validation": [
+        "../../packages/validation/src"
+      ],
+      "@chat/types": [
+        "../../packages/types/src"
+      ],
+      "@chat/schema": [
+        "../../packages/schema/src"
+      ],
+      "@chat/utils": [
+        "../../packages/utils/src"
+      ],
+      "@chat/ws-types": [
+        "../../packages/ws-types/src"
+      ]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", ".next/dev/types/**/*.ts", "**/*.mts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "**/*.mts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    ".next/dev"
+  ]
 }
