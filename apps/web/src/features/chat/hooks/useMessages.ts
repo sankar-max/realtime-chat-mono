@@ -65,7 +65,7 @@ export function useMessages(roomId?: string) {
     // 4b. Send over WebSocket
     const sent = wsSend({
       type: 'SEND_MESSAGE',
-      payload: { roomId, content },
+      payload: { roomId, content, tempId },
     })
 
     if (!sent) {
@@ -83,7 +83,7 @@ export function useMessages(roomId?: string) {
 
     const sent = wsSend({
       type: 'SEND_MESSAGE',
-      payload: { roomId, content: msg.content },
+      payload: { roomId, content: msg.content, tempId: msgTempId },
     })
     if (!sent) {
       dispatch(rollbackMessage({ roomId, tempId: msgTempId }))

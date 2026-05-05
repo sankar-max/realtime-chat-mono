@@ -140,6 +140,7 @@ class WsClient {
         this.dispatch(
           confirmOrAddMessage({
             roomId: msg.payload.roomId,
+            tempId: msg.payload.tempId ?? undefined,
             message: {
               id: msg.payload.id,
               roomId: msg.payload.roomId,

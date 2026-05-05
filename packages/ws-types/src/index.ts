@@ -11,6 +11,7 @@ export const ClientMessageSchema = z.discriminatedUnion('type', [
       roomId: z.string(),
       content: z.string(),
       replyToId: z.string().optional(),
+      tempId: z.string().optional(),
     }),
   }),
 
@@ -40,6 +41,7 @@ export const ServerMessageSchema = z.discriminatedUnion('type', [
       type: z.string(),
       replyToId: z.string().nullable().optional(),
       createdAt: z.string(),
+      tempId: z.string().nullable().optional(),
     }),
   }),
 

@@ -40,8 +40,8 @@ export class MessageRouter {
     }
   }
 
-  private async handleSendMessage(userId: string, payload: { roomId: string; content: string; replyToId?: string }) {
-    const { roomId, content, replyToId } = payload
+  private async handleSendMessage(userId: string, payload: { roomId: string; content: string; replyToId?: string; tempId?: string }) {
+    const { roomId, content, replyToId, tempId } = payload
 
     try {
       const message = await messageService.sendMessage(userId, {
@@ -64,6 +64,7 @@ export class MessageRouter {
           type: message.type,
           replyToId: message.replyToId,
           createdAt: message.createdAt.toISOString(),
+          tempId: tempId,
         },
       })
 
